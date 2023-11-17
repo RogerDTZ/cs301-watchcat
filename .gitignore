@@ -1,0 +1,18 @@
+# VS Code
+.vscode/
+
+# STM32CubeIDE
+.metadata/
+.settings/
+
+# STM32 Project
+*.launch
+Debug/
+Release/
+
+# Darwin
+.DS_Store
+
+# Ignore zip files for Blackboard submission
+*.zip
+
