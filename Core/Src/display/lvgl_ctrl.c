@@ -177,10 +177,12 @@ static void disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area,
     int32_t x;
     int32_t y;
     for (y = area->y1; y <= area->y2; y++) {
-      for (x = area->x1; x <= area->x2; x++) {
+      LCD_Fast_DrawPoint((uint16_t)area->x1, (uint16_t)y, color_p->full);
+      color_p++;
+      for (x = area->x1 + 1; x <= area->x2; x++) {
         /*Put a pixel to the display. For example:*/
         /*put_px(x, y, *color_p)*/
-        LCD_Fast_DrawPoint((uint16_t)x, (uint16_t)y, color_p->full);
+        LCD_DrawPoint_Lazy(color_p->full);
         color_p++;
       }
     }

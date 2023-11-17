@@ -551,6 +551,16 @@ void LCD_Fast_DrawPoint(uint16_t x, uint16_t y, uint16_t color)
   LCD_CS_SET;
   LCD_WR_DATA(color); // 写数据
 }
+
+/*
+ * Draw a pixel with the specified color.
+ * The cursor is moved towards the default scan direction.
+ */
+void LCD_DrawPoint_Lazy(uint16_t color)
+{
+  LCD_WR_DATA(color); // 写数据
+}
+
 // SSD1963 背光设置
 // pwm:背光等级,0~100.越大越亮.
 void LCD_SSD_BackLightSet(uint8_t pwm)

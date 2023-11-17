@@ -187,6 +187,8 @@ void LCD_SetCursor(uint16_t Xpos, uint16_t Ypos); // Set the position of cursor
 void LCD_DrawPoint(uint16_t x, uint16_t y);       // Set color for a point
 void LCD_Fast_DrawPoint(uint16_t x, uint16_t y,
                         uint16_t color); // Set color for a point(quicker)
+void LCD_DrawPoint_Lazy(uint16_t color);
+
 uint16_t LCD_ReadPoint(uint16_t x, uint16_t y); // Read the color of a point
 void LCD_Draw_Circle(uint16_t x0, uint16_t y0, uint8_t r); // Draw a circle
 void LCD_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2,
