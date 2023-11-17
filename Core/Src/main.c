@@ -23,7 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lvgl.h"
+#include "display/lvgl_ctrl.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,7 +88,18 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+  /* clang-format on */
+  lv_init();
+  lv_port_disp_init();
 
+  // Change the active screen's background color
+  lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0x003a57), LV_PART_MAIN);
+
+  /*Create a spinner*/
+  lv_obj_t *spinner = lv_spinner_create(lv_scr_act(), 1000, 60);
+  lv_obj_set_size(spinner, 64, 64);
+  lv_obj_align(spinner, LV_ALIGN_CENTER, 0, 0);
+  /* clang-format off */
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -97,6 +109,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    lv_timer_handler();
+    HAL_Delay(5);
   }
   /* USER CODE END 3 */
 }

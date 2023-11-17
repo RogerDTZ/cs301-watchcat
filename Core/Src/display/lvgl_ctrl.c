@@ -10,6 +10,12 @@
 /*********************
  *      DEFINES
  *********************/
+
+#define MY_DISP_HOR_RES 240
+#define MY_DISP_VER_RES 320
+
+#define DISP_BUF_SIZE ((MY_DISP_HOR_RES) * (MY_DISP_VER_RES) / 10)
+
 #ifndef MY_DISP_HOR_RES
 #warning Please define or replace the macro MY_DISP_HOR_RES with the actual screen width, default value 320 is used for now.
 #define MY_DISP_HOR_RES 320
@@ -84,27 +90,29 @@ void lv_port_disp_init(void)
 
   /* Example for 1) */
   static lv_disp_draw_buf_t draw_buf_dsc_1;
-  static lv_color_t buf_1[MY_DISP_HOR_RES * 10]; /*A buffer for 10 rows*/
+  static lv_color_t buf_1[DISP_BUF_SIZE]; /* buffer of TOTAL*/
   lv_disp_draw_buf_init(&draw_buf_dsc_1, buf_1, NULL,
-                        MY_DISP_HOR_RES * 10); /*Initialize the display buffer*/
+                        DISP_BUF_SIZE); /*Initialize the display buffer*/
 
+  /* clang-format off */
   /* Example for 2) */
-  static lv_disp_draw_buf_t draw_buf_dsc_2;
-  static lv_color_t buf_2_1[MY_DISP_HOR_RES * 10]; /*A buffer for 10 rows*/
-  static lv_color_t
-      buf_2_2[MY_DISP_HOR_RES * 10]; /*An other buffer for 10 rows*/
-  lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2,
-                        MY_DISP_HOR_RES * 10); /*Initialize the display buffer*/
+  // static lv_disp_draw_buf_t draw_buf_dsc_2;
+  // static lv_color_t buf_2_1[MY_DISP_HOR_RES * 10]; /*A buffer for 10 rows*/
+  // static lv_color_t
+  //     buf_2_2[MY_DISP_HOR_RES * 10]; /*An other buffer for 10 rows*/
+  // lv_disp_draw_buf_init(&draw_buf_dsc_2, buf_2_1, buf_2_2,
+  //                       MY_DISP_HOR_RES * 10); /*Initialize the display buffer*/
 
   /* Example for 3) also set disp_drv.full_refresh = 1 below*/
-  static lv_disp_draw_buf_t draw_buf_dsc_3;
-  static lv_color_t
-      buf_3_1[MY_DISP_HOR_RES * MY_DISP_VER_RES]; /*A screen sized buffer*/
-  static lv_color_t buf_3_2[MY_DISP_HOR_RES *
-                            MY_DISP_VER_RES]; /*Another screen sized buffer*/
-  lv_disp_draw_buf_init(&draw_buf_dsc_3, buf_3_1, buf_3_2,
-                        MY_DISP_VER_RES *
-                            MY_DISP_VER_RES); /*Initialize the display buffer*/
+  // static lv_disp_draw_buf_t draw_buf_dsc_3;
+  // static lv_color_t
+  //     buf_3_1[MY_DISP_HOR_RES * MY_DISP_VER_RES]; /*A screen sized buffer*/
+  // static lv_color_t buf_3_2[MY_DISP_HOR_RES *
+  //                           MY_DISP_VER_RES]; /*Another screen sized buffer*/
+  // lv_disp_draw_buf_init(&draw_buf_dsc_3, buf_3_1, buf_3_2,
+  //                       MY_DISP_VER_RES *
+  //                           MY_DISP_VER_RES); /*Initialize the display buffer*/
+  /* clang-format on */
 
   /*-----------------------------------
    * Register the display in LVGL
