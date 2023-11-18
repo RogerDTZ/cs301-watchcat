@@ -8,7 +8,7 @@ We use `pre-commit` and `clang-format` to maintain code style.
 
 Use `pip install pre-commit` to install `pre-commit` in your Python environment.
 
-Run `pre-commit install` in the project root directory to initialize the hook.
+Run `pre-commit install` in the project root directory to initialize the hook. This prepares you an independent `clang-format` to use.
 
 ### 1.2. LCD driver version control
 
@@ -36,7 +36,7 @@ Now you are free to build the STM32 project.
 
 After you stage the changes and before you issue a commit:
 1. Run `pre-commit run clang-format` to check the code style.
-2. Files not conforming to the style will be changed (you will see a red **FAIL**). Please check and stage these new changes.
+2. Files not conforming to the style will be changed (you will see a **FAIL**). Please check and stage these new changes.
 3. Now you can issue the commit. Please adhere to the [message format](#22-message-format).
 
 ### 2.2. Message Format
