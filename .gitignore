@@ -16,3 +16,5 @@ Release/
 # Ignore zip files for Blackboard submission
 *.zip
 
+# LCD Driver selection
+# /Core/Inc/display/lcd_drv_conf.h

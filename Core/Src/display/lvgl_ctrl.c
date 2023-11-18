@@ -5,11 +5,22 @@
 
 #include <stdbool.h>
 
-#include "display/lcd.h"
+#include "display/lcd_drv_conf.h"
 
 /*********************
  *      DEFINES
  *********************/
+
+#if defined(LCD_DRIVER_V3)
+#include "display/lcd.h"
+#if defined(LCD_DRIVER_V4)
+#warning "Both LCD_DRIVER_V3 and LCD_DRIVER_V4 are defined. V3 is used"
+#endif
+#elif defined(LCD_DRIVER_V4)
+#include "display/lcd_v4.h"
+#else
+#error "Please define LCD_DRIVER_V3 or LCD_DRIVER_V4"
+#endif
 
 #define MY_DISP_HOR_RES 240
 #define MY_DISP_VER_RES 320
@@ -150,7 +161,16 @@ void lv_port_disp_init(void)
  **********************/
 
 /*Initialize your display and the required peripherals.*/
-static void disp_init(void) { LCD_Init(); }
+static void disp_init(void)
+{
+#if defined(LCD_DRIVER_V3)
+  LCD_Init();
+#elif defined(LCD_DRIVER_V4)
+  lcd_init();
+#else
+#error "Please configure LCD driver version"
+#endif
+}
 
 volatile bool disp_flush_enabled = true;
 
@@ -176,16 +196,25 @@ static void disp_flush(lv_disp_drv_t *disp_drv, const lv_area_t *area,
 
     int32_t x;
     int32_t y;
+#if defined(LCD_DRIVER_V3)
     for (y = area->y1; y <= area->y2; y++) {
       LCD_Fast_DrawPoint((uint16_t)area->x1, (uint16_t)y, color_p->full);
       color_p++;
       for (x = area->x1 + 1; x <= area->x2; x++) {
-        /*Put a pixel to the display. For example:*/
-        /*put_px(x, y, *color_p)*/
         LCD_DrawPoint_Lazy(color_p->full);
         color_p++;
       }
     }
+#elif defined(LCD_DRIVER_V4)
+    for (y = area->y1; y <= area->y2; y++) {
+      for (x = area->x1; x <= area->x2; x++) {
+        lcd_draw_point((uint16_t)x, (uint16_t)y, (uint32_t)color_p->full);
+        color_p++;
+      }
+    }
+#else
+#error "Please configure LCD driver version"
+#endif
   }
 
   /*IMPORTANT!!!

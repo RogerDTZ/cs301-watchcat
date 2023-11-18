@@ -1,6 +1,9 @@
-#include "display/lcd.h"
+#include "display/lcd_drv_conf.h"
+
+#ifdef LCD_DRIVER_V3
 
 #include "display/font.h"
+#include "display/lcd.h"
 
 // #include "usart.h"
 // #include "delay.h"
@@ -184,6 +187,9 @@ void opt_delay(uint8_t i)
 uint16_t LCD_ReadPoint(uint16_t x, uint16_t y)
 {
   uint16_t r, g, b;
+  r = 0;
+  g = 0;
+  b = 0;
   if (x >= lcddev.width || y >= lcddev.height)
     return 0; // 超过了范围,直接返回
   LCD_SetCursor(x, y);
@@ -1151,3 +1157,5 @@ void LCD_ShowString(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
     p++;
   }
 }
+
+#endif
