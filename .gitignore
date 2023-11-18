@@ -17,4 +17,4 @@ Release/
 *.zip
 
 # LCD Driver selection
-# /Core/Inc/display/lcd_drv_conf.h
+/Core/Inc/display/lcd_drv_conf.h
