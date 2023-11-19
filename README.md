@@ -10,26 +10,6 @@ Use `pip install pre-commit` to install `pre-commit` in your Python environment.
 
 Run `pre-commit install` in the project root directory to initialize the hook. This prepares you an independent `clang-format` to use.
 
-### 1.2. LCD driver version control
-
-Currently, we switch between LCD drivers for v3-board and v4-board by configuration header.
-
-Under `Core/Inc/display`, please create a file `lcd_drv_conf.h` using the following template. You must uncomment one of the two lines to define the version macro.
-```c
-#ifndef __LCD_DRV_CONF_H__
-#define __LCD_DRV_CONF_H__
-
-/* You must define one of the following macro according to the board you use. */
-
-// #define LCD_DRIVER_V3
-// #define LCD_DRIVER_V4
-
-#endif /* __LCD_DRV_CONF_H__ */
-
-```
-
-Now you are free to build the STM32 project.
-
 ## 2. Commit
 
 ### 2.1. Before Commit
