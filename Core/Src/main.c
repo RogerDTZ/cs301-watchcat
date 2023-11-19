@@ -19,12 +19,14 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lvgl.h"
 #include "display/lvgl_ctrl.h"
+#include "SYSTEM/delay/delay.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,10 +89,20 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   /* clang-format on */
+
+  // delay init
+  // must equal to the main clock frequency (MHz)
+  delay_init(72);
+
   lv_init();
   lv_port_disp_init();
+
+  // Enable TIM2: 50 Hz
+  // Screen refresh will be called regularly
+  HAL_TIM_Base_Start_IT(&htim2);
 
   // Change the active screen's background color
   lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0x003a57), LV_PART_MAIN);
@@ -104,13 +116,14 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint32_t lv_next_update;
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    lv_timer_handler();
-    HAL_Delay(5);
+    lv_next_update = lv_timer_handler();
+    HAL_Delay(lv_next_update);
   }
   /* USER CODE END 3 */
 }
