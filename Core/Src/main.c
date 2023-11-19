@@ -27,6 +27,7 @@
 #include "lvgl.h"
 #include "display/lvgl_ctrl.h"
 #include "SYSTEM/delay/delay.h"
+#include "BSP/ATK_MD0280/atk_md0280_touch.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -109,8 +110,18 @@ int main(void)
 
   /*Create a spinner*/
   lv_obj_t *spinner = lv_spinner_create(lv_scr_act(), 1000, 60);
-  lv_obj_set_size(spinner, 64, 64);
+  lv_obj_set_size(spinner, 32, 32);
   lv_obj_align(spinner, LV_ALIGN_CENTER, 0, 0);
+
+  static char coord_buf[64];
+  uint16_t coord_x, coord_y;
+  lv_obj_t *touch_coord = lv_textarea_create(lv_scr_act());
+  lv_obj_set_size(touch_coord, 240, 64);
+  lv_obj_align(touch_coord, LV_ALIGN_TOP_LEFT, 0, 0);
+  lv_snprintf(coord_buf, 64, "No touch\n");
+  lv_textarea_set_text(touch_coord, coord_buf);
+  lv_obj_move_background(touch_coord);
+
   /* clang-format off */
   /* USER CODE END 2 */
 
@@ -122,6 +133,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    if (atk_md0280_touch_scan(&coord_x, &coord_y) == ATK_MD0280_TOUCH_EOK) {
+      lv_snprintf(coord_buf, 64, "X: %u Y: %u\n", coord_x, coord_y);
+      lv_textarea_set_text(touch_coord, coord_buf);
+      lv_obj_move_to(spinner, coord_x - 16, coord_y - 16);
+    }
     lv_next_update = lv_timer_handler();
     HAL_Delay(lv_next_update);
   }

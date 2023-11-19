@@ -236,12 +236,13 @@ static void atk_md0280_touch_calibration(void)
                         y_fac = -y_fac;
                     }
                     
-                    if (    x_fac < 0.95 || x_fac > 1.05 || y_fac < 0.95 || y_fac > 1.05 ||
-                            abs(d1) > 4095 || abs(d2) > 4095 || abs(d3) > 4095 || abs(d4) > 4095 ||
-                            abs(d1) == 0 || abs(d2) == 0 || abs(d3) == 0 || abs(d4) == 0)
-                    {
-                        break;
-                    }
+                    // Some touch pad is in very poor condition
+                    // if (    x_fac < 0.95 || x_fac > 1.05 || y_fac < 0.95 || y_fac > 1.05 ||
+                    //         abs(d1) > 4095 || abs(d2) > 4095 || abs(d3) > 4095 || abs(d4) > 4095 ||
+                    //         abs(d1) == 0 || abs(d2) == 0 || abs(d3) == 0 || abs(d4) == 0)
+                    // {
+                    //     break;
+                    // }
                     
                     g_atk_md0280_touch_sta.fac.x = (float)(d1 + d3) / ((atk_md0280_get_lcd_width() - 40) << 1);
                     g_atk_md0280_touch_sta.fac.y = (float)(d2 + d4) / ((atk_md0280_get_lcd_height() - 40) << 1);
@@ -281,7 +282,7 @@ void atk_md0280_touch_init(void)
 {
     atk_md0280_touch_hw_init();
     atk_md0280_touch_spi_init();
-    // atk_md0280_touch_calibration();
+    atk_md0280_touch_calibration();
 }
 
 /**
