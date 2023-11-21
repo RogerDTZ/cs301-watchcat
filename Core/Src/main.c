@@ -24,10 +24,18 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lvgl.h"
-#include "display/lvgl_ctrl.h"
+/* clang-format on */
+
+#include <assert.h>
+
 #include "SYSTEM/delay/delay.h"
+
 #include "BSP/ATK_MD0280/atk_md0280_touch.h"
+#include "lvgl.h"
+
+#include "display/lvgl_ctrl.h"
+
+/* clang-format off */
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,7 +93,14 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+  /* clang-format on */
 
+  // Initialize the delay scale in the SYSTEM library
+  const uint32_t pclk2_freq = HAL_RCC_GetPCLK2Freq();
+  assert(pclk2_freq % 1000000 == 0);
+  delay_init(pclk2_freq / 1000000);
+
+  /* clang-format off */
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -94,25 +109,26 @@ int main(void)
   /* USER CODE BEGIN 2 */
   /* clang-format on */
 
-  // delay init
-  // must equal to the main clock frequency (MHz)
-  delay_init(72);
-
+  // Initialize lvgl library
   lv_init();
+  // Initialize LCD & connect lvgl to LCD
   lv_port_disp_init();
 
   // Enable TIM2: 50 Hz
-  // Screen refresh will be called regularly
+  // lvgl's screen refresh will now be called regularly
   HAL_TIM_Base_Start_IT(&htim2);
+
+  // ================== DEMO START ==================
 
   // Change the active screen's background color
   lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0x003a57), LV_PART_MAIN);
 
-  /*Create a spinner*/
+  // Create a spinner
   lv_obj_t *spinner = lv_spinner_create(lv_scr_act(), 1000, 60);
   lv_obj_set_size(spinner, 32, 32);
   lv_obj_align(spinner, LV_ALIGN_CENTER, 0, 0);
 
+  // Create a touch coordinate text
   static char coord_buf[64];
   uint16_t coord_x, coord_y;
   lv_obj_t *touch_coord = lv_textarea_create(lv_scr_act());
@@ -127,20 +143,27 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  uint32_t lv_next_update;
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    /* clang-format on */
+
+    // Update widgets
     if (atk_md0280_touch_scan(&coord_x, &coord_y) == ATK_MD0280_TOUCH_EOK) {
       lv_snprintf(coord_buf, 64, "X: %u Y: %u\n", coord_x, coord_y);
       lv_textarea_set_text(touch_coord, coord_buf);
       lv_obj_move_to(spinner, coord_x - 16, coord_y - 16);
     }
-    lv_next_update = lv_timer_handler();
-    HAL_Delay(lv_next_update);
+
+    // ================== DEMO END ==================
+
+    // Call lvgl's update handler
+    // Then, delay for the required period
+    HAL_Delay(lv_timer_handler());
   }
+  /* clang-format off */
   /* USER CODE END 3 */
 }
 
