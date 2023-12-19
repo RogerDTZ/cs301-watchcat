@@ -1,4 +1,5 @@
 *.sll
+*events.py
 export/*
 autosave/
 backup/
