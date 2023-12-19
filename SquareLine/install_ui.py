@@ -19,6 +19,11 @@ if __name__ == "__main__":
         install_inc_dir.mkdir()
     if not install_src_dir.exists():
         install_src_dir.mkdir()
+    # Delete all old files
+    for file in install_inc_dir.glob("*"):
+        os.remove(file)
+    for file in install_src_dir.glob("*"):
+        os.remove(file)
     # Find all headers and sources
     headers = export_dir.glob("*.h")
     sources = export_dir.glob("*.c")

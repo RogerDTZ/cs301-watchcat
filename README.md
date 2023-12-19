@@ -56,6 +56,9 @@ Please make sure to click `Export -> Export UI Files` to export all UI files if:
 * This is the first time you configure the project.
 * UI has been updated inside `SquareLine Studio`.
 
-The STM32 project build system will automatically import these files.
+The STM32 project build system will automatically import these files. The import script `./SquareLine/install_ui.py` is run in STM32 build system using executable named `python` in **default system path**.
+
+* On Windows you need to add `python.exe` to the system path.
+* On Unix system you need to ensure the default `$PATH` (not the one you customize for you shell) contains `python`. You may need to add a soft link of `python3` in `/usr/local/bin`.
 
 Implement callback functions and interaction with UIs in `Core/Src/port/sl_ui.c`
