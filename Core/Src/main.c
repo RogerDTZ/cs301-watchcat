@@ -35,6 +35,7 @@
 
 #include "port/input_dev.h"
 #include "port/lvgl_ctrl.h"
+#include "sl_ui/ui.h"
 
 /* clang-format off */
 /* USER CODE END Includes */
@@ -127,6 +128,8 @@ int main(void)
   lv_port_disp_init();
   // Initialize all input devices
   init_lvgl_input_devices();
+  // Init SquareLine ui
+  ui_init();
 
   // Enable TIM2: 50 Hz
   // lvgl's screen refresh will now be called regularly

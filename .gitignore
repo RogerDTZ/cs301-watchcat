@@ -6,7 +6,9 @@
 .settings/
 
 # STM32 Project
-*.launch
+/*.launch
+Core/Inc/sl_ui/
+Core/Src/sl_ui/
 Debug/
 Release/
 

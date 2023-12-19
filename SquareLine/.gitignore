@@ -1,2 +1,6 @@
-export/
+*.sll
+export/*
+autosave/
+backup/
 
+!export/.gitkeep
