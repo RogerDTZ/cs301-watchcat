@@ -1,7 +1,7 @@
 /*********************
  *      INCLUDES
  *********************/
-#include "display/lvgl_ctrl.h"
+#include "port/lvgl_ctrl.h"
 
 #include <stdbool.h>
 
@@ -14,7 +14,7 @@
 #define MY_DISP_HOR_RES 240
 #define MY_DISP_VER_RES 320
 
-#define DISP_BUF_SIZE ((MY_DISP_HOR_RES) * (MY_DISP_VER_RES) / 10)
+#define DISP_BUF_SIZE ((MY_DISP_HOR_RES) * (MY_DISP_VER_RES) / 20)
 
 #ifndef MY_DISP_HOR_RES
 #warning Please define or replace the macro MY_DISP_HOR_RES with the actual screen width, default value 320 is used for now.

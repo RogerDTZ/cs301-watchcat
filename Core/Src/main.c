@@ -33,7 +33,8 @@
 #include "BSP/ATK_MD0280/atk_md0280_touch.h"
 #include "lvgl.h"
 
-#include "display/lvgl_ctrl.h"
+#include "port/input_dev.h"
+#include "port/lvgl_ctrl.h"
 
 /* clang-format off */
 /* USER CODE END Includes */
@@ -57,6 +58,10 @@
 
 /* USER CODE BEGIN PV */
 
+static uint16_t probed_touch_point_x;
+static uint16_t probed_touch_point_y;
+static bool probed_touch_pressed;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -67,6 +72,13 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+void touch_indev_read_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
+{
+  data->point.x = (lv_coord_t)probed_touch_point_x;
+  data->point.y = (lv_coord_t)probed_touch_point_y;
+  data->state = probed_touch_pressed ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
+}
 
 /* USER CODE END 0 */
 
@@ -113,30 +125,12 @@ int main(void)
   lv_init();
   // Initialize LCD & connect lvgl to LCD
   lv_port_disp_init();
+  // Initialize all input devices
+  init_lvgl_input_devices();
 
   // Enable TIM2: 50 Hz
   // lvgl's screen refresh will now be called regularly
   HAL_TIM_Base_Start_IT(&htim2);
-
-  // ================== DEMO START ==================
-
-  // Change the active screen's background color
-  lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0x003a57), LV_PART_MAIN);
-
-  // Create a spinner
-  lv_obj_t *spinner = lv_spinner_create(lv_scr_act(), 1000, 60);
-  lv_obj_set_size(spinner, 32, 32);
-  lv_obj_align(spinner, LV_ALIGN_CENTER, 0, 0);
-
-  // Create a touch coordinate text
-  static char coord_buf[64];
-  uint16_t coord_x, coord_y;
-  lv_obj_t *touch_coord = lv_textarea_create(lv_scr_act());
-  lv_obj_set_size(touch_coord, 240, 64);
-  lv_obj_align(touch_coord, LV_ALIGN_TOP_LEFT, 0, 0);
-  lv_snprintf(coord_buf, 64, "No touch\n");
-  lv_textarea_set_text(touch_coord, coord_buf);
-  lv_obj_move_background(touch_coord);
 
   /* clang-format off */
   /* USER CODE END 2 */
@@ -150,14 +144,10 @@ int main(void)
     /* USER CODE BEGIN 3 */
     /* clang-format on */
 
-    // Update widgets
-    if (atk_md0280_touch_scan(&coord_x, &coord_y) == ATK_MD0280_TOUCH_EOK) {
-      lv_snprintf(coord_buf, 64, "X: %u Y: %u\n", coord_x, coord_y);
-      lv_textarea_set_text(touch_coord, coord_buf);
-      lv_obj_move_to(spinner, coord_x - 16, coord_y - 16);
-    }
-
-    // ================== DEMO END ==================
+    // Probe input devices
+    probed_touch_pressed =
+        atk_md0280_touch_scan(&probed_touch_point_x, &probed_touch_point_y) ==
+        ATK_MD0280_TOUCH_EOK;
 
     // Call lvgl's update handler
     // Then, delay for the required period
