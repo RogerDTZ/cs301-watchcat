@@ -31,10 +31,10 @@
 #define ATK_MD0280_USING_TOUCH          1
 
 /* 定义ATK-MD0280模块启用的字体 */
-#define ATK_MD0280_FONT_12              1
-#define ATK_MD0280_FONT_16              1
-#define ATK_MD0280_FONT_24              1
-#define ATK_MD0280_FONT_32              1
+#define ATK_MD0280_FONT_12              0
+#define ATK_MD0280_FONT_16              0
+#define ATK_MD0280_FONT_24              0
+#define ATK_MD0280_FONT_32              0
 
 /* 默认启用触摸 */
 #ifndef ATK_MD0280_USING_TOUCH
@@ -44,7 +44,7 @@
 /* 默认启用12号字体 */
 #if ((ATK_MD0280_FONT_12 == 0) && (ATK_MD0280_FONT_16 == 0) && (ATK_MD0280_FONT_24 == 0) && (ATK_MD0280_FONT_32 == 0))
 #undef ATK_MD0280_FONT_12
-#defien ATK_MD0280_FONT_12 1
+#define ATK_MD0280_FONT_12 1
 #endif
 
 /* 包含头文件 */

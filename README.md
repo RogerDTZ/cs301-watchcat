@@ -15,6 +15,7 @@ Run `pre-commit install` in the project root directory to initialize the hook. T
 ### 2.1. Before Commit
 
 After you stage the changes and before you issue a commit:
+
 1. Run `pre-commit run clang-format` to check the code style.
 2. Files not conforming to the style will be changed (you will see a **FAIL**). Please check and stage these new changes.
 3. Now you can issue the commit. Please adhere to the [message format](#22-message-format).
@@ -26,9 +27,10 @@ When making commits, try to use [commitizen](https://commitizen.github.io/cz-cli
 Or, if you make commits manually, try to adhere to the format of `<TYPE>(<SCOPE>): <SHORT and IMPERATIVE summary, lower case, no period>`
 
 `<TYPE>` is one of the following describing the nature of the commit:
-![](images/commitizen-example.png)
+![commitizen content](images/commitizen-example.png)
 
 `<SCOPE>` is optional but highly recommended for `feat`! Some scopes you would expect in this project are:
+
 * `core`: core logic, HAL stuff, interrupts, peripherals, utilities, etc.
 * `display`: LCD driver, *lvgl* library, etc.
 * `home`: home screen
@@ -37,13 +39,23 @@ Or, if you make commits manually, try to adhere to the format of `<TYPE>(<SCOPE>
 * `album`: album component
 
 Good examples are:
-```
+
+```text
 feat(display): optimize LCD flush
 feat(calc): add calculator app
 build: add define for lvgl
 ```
 
-## 3. UI System and Build
+## 3. Touch Calibration
+
+We utilize AT24C02 EEPROM to store the calibration data. The calibration will be called up when
+
+* EEPROM does not contain history calibration data.
+* `KEY0` is pressed when the board starts.
+
+The calibration result will be stored back to EEPROM.
+
+## 4. UI System and Build
 
 The UI designer is powered by [*SquareLine Studio*](https://squareline.io/).
 
@@ -62,3 +74,5 @@ The STM32 project build system will automatically import these files. The import
 * On Unix system you need to ensure the default `$PATH` (not the one you customize for you shell) contains `python`. You may need to add a soft link of `python3` in `/usr/local/bin`.
 
 Implement callback functions and interaction with UIs in `Core/Src/port/sl_ui.c`
+
+If you encounter "Build Error" after `git pull` that updates the STM32 project, consider `Close Project` then `Open Project`, then retry it.

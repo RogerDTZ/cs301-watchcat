@@ -19,6 +19,9 @@
  */
 
 #include "./BSP/ATK_MD0280/atk_md0280_touch.h"
+#include "./BSP/KEY/key.h"
+#include "./BSP/24C02/24cxx.h"
+#include "eeprom/persistent.h"
 
 #if (ATK_MD0280_USING_TOUCH != 0)
 
@@ -171,14 +174,27 @@ static void atk_md0280_touch_calibration(void)
     uint8_t point_index;
     int16_t d1, d2, d3, d4;
     double x_fac, y_fac;
-    
+    pers_touch_calibration_t cal;
+
+    if (HAL_GPIO_ReadPin(KEY0_GPIO_PORT, KEY0_GPIO_PIN) == GPIO_PIN_SET) {
+        // KEY0 not held at startup. Try to use stored calibration preset
+        AT24CXX_Read(PERS_TOUCH_CALIBRATION_ADDR, (uint8_t *)&cal, sizeof(cal));
+        if (cal.magic == PERS_TOUCH_CALIBRATION_MAGIC) {
+            g_atk_md0280_touch_sta.fac.x = cal.fac_x;
+            g_atk_md0280_touch_sta.fac.y = cal.fac_y;
+            g_atk_md0280_touch_sta.center.x = cal.center_x;
+            g_atk_md0280_touch_sta.center.y = cal.center_y;
+            return;
+        }
+    }
+
     atk_md0280_clear(ATK_MD0280_WHITE);
     atk_md0280_show_string( 40,
                             40,
                             ATK_MD0280_LCD_WIDTH - 80,
                             ATK_MD0280_LCD_HEIGHT - 80,
                             "Please use the stylus click the cross on the screen.The cross will always move until the screen adjustment is completed.",
-                            ATK_MD0280_LCD_FONT_16,
+                            ATK_MD0280_LCD_FONT_12,
                             ATK_MD0280_RED);
     
     while (1)
@@ -250,14 +266,29 @@ static void atk_md0280_touch_calibration(void)
                     g_atk_md0280_touch_sta.center.x = point[4].x;
                     g_atk_md0280_touch_sta.center.y = point[4].y;
                     
-                    atk_md0280_clear(ATK_MD0280_WHITE);
+                    atk_md0280_clear(ATK_MD0280_BLACK);
                     atk_md0280_show_string( 30,
                                             100,
                                             atk_md0280_get_lcd_width(),
                                             atk_md0280_get_lcd_height(),
                                             "Touch Screen Adjust OK!",
-                                            ATK_MD0280_LCD_FONT_16,
-                                            ATK_MD0280_BLUE);
+                                            ATK_MD0280_LCD_FONT_12,
+                                            ATK_MD0280_MAGENTA);
+                    
+                    cal.magic = PERS_TOUCH_CALIBRATION_MAGIC;
+                    cal.fac_x = g_atk_md0280_touch_sta.fac.x;
+                    cal.fac_y = g_atk_md0280_touch_sta.fac.y;
+                    cal.center_x = g_atk_md0280_touch_sta.center.x;
+                    cal.center_y = g_atk_md0280_touch_sta.center.y;
+                    AT24CXX_Write(PERS_TOUCH_CALIBRATION_ADDR, (uint8_t *)&cal, sizeof(cal));
+                    atk_md0280_show_string( 30,
+                                            130,
+                                            atk_md0280_get_lcd_width(),
+                                            atk_md0280_get_lcd_height(),
+                                            "Calibration saved to EEPROM",
+                                            ATK_MD0280_LCD_FONT_12,
+                                            ATK_MD0280_GREEN);
+
                     delay_ms(1000);
                     atk_md0280_clear(ATK_MD0280_WHITE);
                     

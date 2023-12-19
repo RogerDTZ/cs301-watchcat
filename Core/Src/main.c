@@ -30,7 +30,9 @@
 
 #include "SYSTEM/delay/delay.h"
 
+#include "BSP/24C02/24cxx.h"
 #include "BSP/ATK_MD0280/atk_md0280_touch.h"
+#include "BSP/LED/led.h"
 #include "lvgl.h"
 
 #include "port/input_dev.h"
@@ -121,6 +123,21 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   /* clang-format on */
+
+  // Init LEDs
+  led_init();
+
+  AT24CXX_Init();
+  while (AT24CXX_Check()) {
+    // Indicate a failure upon checking the EEPROM
+    LED0_TOGGLE();
+    HAL_Delay(300);
+    LED0_TOGGLE();
+    LED1_TOGGLE();
+    HAL_Delay(300);
+    LED1_TOGGLE();
+    HAL_Delay(300);
+  }
 
   // Initialize lvgl library
   lv_init();
