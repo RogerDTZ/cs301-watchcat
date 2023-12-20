@@ -124,9 +124,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
   /* clang-format on */
 
-  // Init LEDs
+  // Initialize LEDs
   led_init();
 
+  // Initialize EEPROM
   AT24CXX_Init();
   while (AT24CXX_Check()) {
     // Indicate a failure upon checking the EEPROM
