@@ -22,6 +22,8 @@ IncludeCategories:
     Priority:        3
   - Regex:           '^"lvgl\.h"$'
     Priority:        3
+  - Regex:           '^"sl_ui/'
+    Priority:        3
   - Regex:           '^"[^/]+\.h"$'
     Priority:        2
   - Regex:           '.*'
