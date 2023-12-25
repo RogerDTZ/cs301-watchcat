@@ -51,3 +51,23 @@ void CalcCommClickedLB(lv_event_t *e) {}
 void CalcCommClickedRB(lv_event_t *e) {}
 void CalcCommClickedPow(lv_event_t *e) {}
 void CalcCommClickedBackspace(lv_event_t *e) {}
+
+void CalcEqualConfirm(lv_event_t *e) {}
+
+void CalcCommClickedX(lv_event_t *e) {}
+
+void CalcCommClickedY(lv_event_t *e) {}
+
+void BinaryClickedAdd(lv_event_t *e) {}
+
+void BinarySub(lv_event_t *e) {}
+
+void BinaryMul(lv_event_t *e) {}
+
+void BinaryEqual(lv_event_t *e) {}
+
+void BinaryClear(lv_event_t *e) {}
+
+void BinaryClicked0(lv_event_t *e) {}
+
+void BinaryClicked1(lv_event_t *e) {}

@@ -2150,7 +2150,8 @@
                             "InheritedType": 11
                           }
                         ],
-                        "saved_objtypeKey": "PANEL"
+                        "saved_objtypeKey": "PANEL",
+                        "tree_closed": true
                       },
                       {
                         "guid": "GUID9976388-865023S7232359",
@@ -3002,7 +3003,8 @@
                             "InheritedType": 11
                           }
                         ],
-                        "saved_objtypeKey": "PANEL"
+                        "saved_objtypeKey": "PANEL",
+                        "tree_closed": true
                       }
                     ],
                     "locked": false,
@@ -3071,7 +3073,7 @@
                       {
                         "nid": -1986144731,
                         "strtype": "OBJECT/Hidden",
-                        "strval": "False",
+                        "strval": "True",
                         "InheritedType": 2
                       },
                       {
@@ -3271,7 +3273,8 @@
                         "InheritedType": 11
                       }
                     ],
-                    "saved_objtypeKey": "CONTAINER"
+                    "saved_objtypeKey": "CONTAINER",
+                    "tree_closed": true
                   },
                   {
                     "guid": "GUID72225429-452238S292354",
@@ -17273,7 +17276,8 @@
                                 "InheritedType": 11
                               }
                             ],
-                            "saved_objtypeKey": "TABPAGE"
+                            "saved_objtypeKey": "TABPAGE",
+                            "tree_closed": true
                           },
                           {
                             "guid": "GUID70032525-926307S1802359",
@@ -31310,6 +31314,7 @@
                                           {
                                             "nid": 1825163645,
                                             "strtype": "BAR_PROPERTY/Target",
+                                            "strval": "-",
                                             "InheritedType": 9
                                           },
                                           {
@@ -32002,7 +32007,7 @@
                                           {
                                             "nid": 1212458109,
                                             "strtype": "CALL FUNCTION/Dont_export_function",
-                                            "strval": "False",
+                                            "strval": "True",
                                             "InheritedType": 2
                                           }
                                         ],
@@ -32034,6 +32039,7 @@
                                           {
                                             "nid": -1243538457,
                                             "strtype": "BAR_PROPERTY/Target",
+                                            "strval": "-",
                                             "InheritedType": 9
                                           },
                                           {
@@ -35347,7 +35353,8 @@
                                     "InheritedType": 4
                                   }
                                 ],
-                                "saved_objtypeKey": "BUTTON"
+                                "saved_objtypeKey": "BUTTON",
+                                "tree_closed": true
                               }
                             ],
                             "locked": false,
@@ -35595,8 +35602,7 @@
                                 "InheritedType": 11
                               }
                             ],
-                            "saved_objtypeKey": "TABPAGE",
-                            "tree_closed": true
+                            "saved_objtypeKey": "TABPAGE"
                           }
                         ],
                         "locked": false,
@@ -36107,7 +36113,7 @@
                       {
                         "nid": -750822150,
                         "strtype": "OBJECT/Hidden",
-                        "strval": "True",
+                        "strval": "False",
                         "InheritedType": 2
                       },
                       {
@@ -36307,8 +36313,7 @@
                         "InheritedType": 11
                       }
                     ],
-                    "saved_objtypeKey": "CONTAINER",
-                    "tree_closed": true
+                    "saved_objtypeKey": "CONTAINER"
                   }
                 ],
                 "locked": false,
@@ -37179,9 +37184,9 @@
     "theme_dark": false,
     "theme_color1": 5,
     "theme_color2": 0,
-    "uiExportFolderPath": "/Users/rogerdtz/sustech-2023fall/CS301-EmbeddedSystem/cs301-watchcat/SquareLine/export",
-    "projectExportFolderPath": "/Users/rogerdtz/sustech-2023fall/CS301-EmbeddedSystem/cs301-watchcat/SquareLine/export",
-    "backup_cnt": 223,
+    "uiExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
+    "projectExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
+    "backup_cnt": 225,
     "autosave_cnt": 0,
     "lvgl_version": "8.3.3",
     "callfuncsexport": "C_FILE",
