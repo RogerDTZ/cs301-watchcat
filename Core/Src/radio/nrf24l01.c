@@ -38,9 +38,9 @@ static uint8_t connecting_pipe(radio_user_t x, radio_user_t y)
 static uint8_t related_pipes(radio_user_t x)
 {
   uint8_t code = 0;
-  for (radio_user_t y = 0; y < CLIENT_NUM - 1; y++) {
+  for (radio_user_t y = 0; y < CLIENT_NUM; y++) {
     if (y != x) {
-      code |= connecting_pipe(x, y);
+      code |= pipe_code(connecting_pipe(x, y));
     }
   }
   return code;

@@ -175,7 +175,6 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim2);
 
   // [FIXME] nrf24l01 test
-  // radio_user_t user_id = 0;
   radio_user_t user_id = 0;
   if (user_id == 0) {
     // Act as transmitter
