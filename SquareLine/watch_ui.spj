@@ -27371,7 +27371,8 @@
                                 "InheritedType": 11
                               }
                             ],
-                            "saved_objtypeKey": "TABPAGE"
+                            "saved_objtypeKey": "TABPAGE",
+                            "tree_closed": true
                           },
                           {
                             "guid": "GUID23490526-949351S9392359",
@@ -28027,7 +28028,7 @@
                                       },
                                       {
                                         "nid": 720323559,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "BAR_PROPERTY",
                                         "childs": [
                                           {
@@ -28075,7 +28076,7 @@
                                   {
                                     "disabled": false,
                                     "nid": -248903492,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -28744,7 +28745,7 @@
                                           {
                                             "nid": 1212458109,
                                             "strtype": "CALL FUNCTION/Dont_export_function",
-                                            "strval": "False",
+                                            "strval": "True",
                                             "InheritedType": 2
                                           }
                                         ],
@@ -28752,7 +28753,7 @@
                                       },
                                       {
                                         "nid": -974331005,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "BAR_PROPERTY",
                                         "childs": [
                                           {
@@ -33920,8 +33921,8 @@
     "theme_dark": false,
     "theme_color1": 5,
     "theme_color2": 0,
-    "uiExportFolderPath": "/Users/rogerdtz/sustech-2023fall/CS301-EmbeddedSystem/cs301-watchcat/SquareLine/export",
-    "projectExportFolderPath": "/Users/rogerdtz/sustech-2023fall/CS301-EmbeddedSystem/cs301-watchcat/SquareLine/export",
+    "uiExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
+    "projectExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
     "backup_cnt": 218,
     "autosave_cnt": 0,
     "lvgl_version": "8.3.3",
