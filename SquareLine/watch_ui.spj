@@ -3073,7 +3073,7 @@
                       {
                         "nid": -1986144731,
                         "strtype": "OBJECT/Hidden",
-                        "strval": "True",
+                        "strval": "False",
                         "InheritedType": 2
                       },
                       {
@@ -4239,7 +4239,7 @@
                                     "strtype": "OBJECT/Position",
                                     "intarray": [
                                       -40,
-                                      70
+                                      68
                                     ],
                                     "InheritedType": 7
                                   },
@@ -4562,8 +4562,7 @@
                                     "InheritedType": 4
                                   }
                                 ],
-                                "saved_objtypeKey": "BUTTON",
-                                "tree_closed": true
+                                "saved_objtypeKey": "BUTTON"
                               },
                               {
                                 "guid": "GUID83096233-452226S722354",
@@ -17276,8 +17275,7 @@
                                 "InheritedType": 11
                               }
                             ],
-                            "saved_objtypeKey": "TABPAGE",
-                            "tree_closed": true
+                            "saved_objtypeKey": "TABPAGE"
                           },
                           {
                             "guid": "GUID70032525-926307S1802359",
@@ -36113,7 +36111,7 @@
                       {
                         "nid": -750822150,
                         "strtype": "OBJECT/Hidden",
-                        "strval": "False",
+                        "strval": "True",
                         "InheritedType": 2
                       },
                       {
@@ -36313,7 +36311,8 @@
                         "InheritedType": 11
                       }
                     ],
-                    "saved_objtypeKey": "CONTAINER"
+                    "saved_objtypeKey": "CONTAINER",
+                    "tree_closed": true
                   }
                 ],
                 "locked": false,
@@ -37186,7 +37185,7 @@
     "theme_color2": 0,
     "uiExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
     "projectExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
-    "backup_cnt": 225,
+    "backup_cnt": 229,
     "autosave_cnt": 0,
     "lvgl_version": "8.3.3",
     "callfuncsexport": "C_FILE",

@@ -86,16 +86,6 @@ void touch_indev_read_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
   data->state = probed_touch_pressed ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
 }
 
-// [FIXME]
-void try_transmit()
-{
-  const char payload[33] = "Greetings!";
-  int ret = NRF24L01_TxPacket((u8 *)payload);
-  char res[16];
-  sprintf(res, "res: %d", ret);
-  lv_label_set_text(ui_CalcFml, res);
-}
-
 /* USER CODE END 0 */
 
 /**
@@ -174,16 +164,6 @@ int main(void)
   // lvgl's screen refresh will now be called regularly
   HAL_TIM_Base_Start_IT(&htim2);
 
-  // [FIXME] nrf24l01 test
-  radio_user_t user_id = 0;
-  if (user_id == 0) {
-    // Act as transmitter
-    radio_init_ptx(0, 1);
-  } else {
-    // Act as receiver
-    radio_init_prx(1);
-  }
-
   /* clang-format off */
   /* USER CODE END 2 */
 
@@ -200,17 +180,6 @@ int main(void)
     probed_touch_pressed =
         atk_md0280_touch_scan(&probed_touch_point_x, &probed_touch_point_y) ==
         ATK_MD0280_TOUCH_EOK;
-
-    // [FIXME]
-    if (user_id == 1) {
-      static tmp_buf[64];
-      if (NRF24L01_RxPacket(tmp_buf) == 0) {
-        tmp_buf[32] = 0; // 加入字符串结束符
-        lv_label_set_text(ui_CalcFml, tmp_buf);
-      } else {
-        lv_label_set_text(ui_CalcFml, "None");
-      }
-    }
 
     // Call lvgl's update handler
     // Then, delay for the required period
