@@ -1237,7 +1237,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 1491239961,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -1260,7 +1260,7 @@
                                       },
                                       {
                                         "nid": -1256562834,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -1892,7 +1892,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 467691296,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -1915,7 +1915,7 @@
                                       },
                                       {
                                         "nid": -1278140200,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -2547,7 +2547,7 @@
                                   {
                                     "disabled": false,
                                     "nid": -367583059,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -2570,7 +2570,7 @@
                                       },
                                       {
                                         "nid": 980424655,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -3202,7 +3202,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 245463687,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -3225,7 +3225,7 @@
                                       },
                                       {
                                         "nid": 1398379754,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -3857,7 +3857,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 164617877,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -3880,7 +3880,7 @@
                                       },
                                       {
                                         "nid": 1154157023,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -4512,7 +4512,7 @@
                                   {
                                     "disabled": false,
                                     "nid": -565773399,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -4535,7 +4535,7 @@
                                       },
                                       {
                                         "nid": -6645594,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -5167,7 +5167,7 @@
                                   {
                                     "disabled": false,
                                     "nid": -735722209,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -5190,7 +5190,7 @@
                                       },
                                       {
                                         "nid": -658983760,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -5822,7 +5822,7 @@
                                   {
                                     "disabled": false,
                                     "nid": -267033645,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -5845,7 +5845,7 @@
                                       },
                                       {
                                         "nid": 158032912,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -5885,8 +5885,7 @@
                                     "InheritedType": 4
                                   }
                                 ],
-                                "saved_objtypeKey": "BUTTON",
-                                "tree_closed": true
+                                "saved_objtypeKey": "BUTTON"
                               },
                               {
                                 "guid": "GUID59861748-460890S2072354",
@@ -6477,7 +6476,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 84809873,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -6500,7 +6499,7 @@
                                       },
                                       {
                                         "nid": -352383637,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -7132,7 +7131,7 @@
                                   {
                                     "disabled": false,
                                     "nid": -1483842735,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -7155,7 +7154,7 @@
                                       },
                                       {
                                         "nid": 663222136,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -7787,7 +7786,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 284411905,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -7810,7 +7809,7 @@
                                       },
                                       {
                                         "nid": -1432798510,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -8442,7 +8441,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 365842308,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -8465,7 +8464,7 @@
                                       },
                                       {
                                         "nid": -277805412,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -9097,7 +9096,7 @@
                                   {
                                     "disabled": false,
                                     "nid": -226468255,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -9120,7 +9119,7 @@
                                       },
                                       {
                                         "nid": -476414185,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -9752,7 +9751,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 1580770967,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -9775,7 +9774,7 @@
                                       },
                                       {
                                         "nid": 1252454962,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -10427,7 +10426,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 152246585,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -10450,7 +10449,7 @@
                                       },
                                       {
                                         "nid": -280083623,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -11082,7 +11081,7 @@
                                   {
                                     "disabled": false,
                                     "nid": -1950503829,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -11105,7 +11104,7 @@
                                       },
                                       {
                                         "nid": -556107369,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -11737,7 +11736,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 2110193805,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -11760,7 +11759,7 @@
                                       },
                                       {
                                         "nid": -1257651262,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -12392,7 +12391,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 1063275541,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -12415,7 +12414,7 @@
                                       },
                                       {
                                         "nid": -954857254,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -13047,7 +13046,7 @@
                                   {
                                     "disabled": false,
                                     "nid": 69545254,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -13070,7 +13069,7 @@
                                       },
                                       {
                                         "nid": 1566504280,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -13702,7 +13701,7 @@
                                   {
                                     "disabled": false,
                                     "nid": -902097893,
-                                    "strtype": "BUTTON/EventHandler",
+                                    "strtype": "_event/EventHandler",
                                     "strval": "CLICKED",
                                     "childs": [
                                       {
@@ -13725,7 +13724,7 @@
                                       },
                                       {
                                         "nid": -847658769,
-                                        "strtype": "_custom/action",
+                                        "strtype": "_event/action",
                                         "strval": "CALL FUNCTION",
                                         "childs": [
                                           {
@@ -13769,7 +13768,7 @@
                                 "tree_closed": true
                               }
                             ],
-                            "locked": true,
+                            "locked": false,
                             "properties": [
                               {
                                 "nid": 9042947,
@@ -13797,7 +13796,6 @@
                               },
                               {
                                 "nid": -196329172,
-                                "flags": 1048576,
                                 "strtype": "TABPAGE/Flags",
                                 "InheritedType": 1
                               },
@@ -13888,13 +13886,13 @@
                               {
                                 "nid": -1630526916,
                                 "strtype": "TABPAGE/Scroll_elastic",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
                                 "nid": -2023406716,
                                 "strtype": "TABPAGE/Scroll_momentum",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
@@ -13906,7 +13904,7 @@
                               {
                                 "nid": 2013556379,
                                 "strtype": "TABPAGE/Scroll_chain",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
@@ -14050,7 +14048,6 @@
                               },
                               {
                                 "nid": -1580398844,
-                                "flags": 1048576,
                                 "strtype": "TABPAGE/Flags",
                                 "InheritedType": 1
                               },
@@ -14135,19 +14132,19 @@
                               {
                                 "nid": -1279877093,
                                 "strtype": "TABPAGE/Scrollable",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
                                 "nid": 1482556528,
                                 "strtype": "TABPAGE/Scroll_elastic",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
                                 "nid": 45333628,
                                 "strtype": "TABPAGE/Scroll_momentum",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
@@ -14159,7 +14156,7 @@
                               {
                                 "nid": 961734174,
                                 "strtype": "TABPAGE/Scroll_chain",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
@@ -14268,7 +14265,8 @@
                                 "InheritedType": 11
                               }
                             ],
-                            "saved_objtypeKey": "TABPAGE"
+                            "saved_objtypeKey": "TABPAGE",
+                            "tree_closed": true
                           },
                           {
                             "guid": "GUID2625638-447922S4482354",
@@ -14301,7 +14299,6 @@
                               },
                               {
                                 "nid": 541993954,
-                                "flags": 1048576,
                                 "strtype": "TABPAGE/Flags",
                                 "InheritedType": 1
                               },
@@ -14386,19 +14383,19 @@
                               {
                                 "nid": -700139502,
                                 "strtype": "TABPAGE/Scrollable",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
                                 "nid": -808668617,
                                 "strtype": "TABPAGE/Scroll_elastic",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
                                 "nid": -2100047496,
                                 "strtype": "TABPAGE/Scroll_momentum",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
@@ -14410,7 +14407,7 @@
                               {
                                 "nid": -1339794352,
                                 "strtype": "TABPAGE/Scroll_chain",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
@@ -14581,7 +14578,6 @@
                           },
                           {
                             "nid": 496619279,
-                            "flags": 1048576,
                             "strtype": "OBJECT/Flags",
                             "InheritedType": 1
                           },
@@ -14672,13 +14668,13 @@
                           {
                             "nid": -1572275657,
                             "strtype": "OBJECT/Scroll_elastic",
-                            "strval": "True",
+                            "strval": "False",
                             "InheritedType": 2
                           },
                           {
                             "nid": 1521038062,
                             "strtype": "OBJECT/Scroll_momentum",
-                            "strval": "True",
+                            "strval": "False",
                             "InheritedType": 2
                           },
                           {
@@ -14690,7 +14686,7 @@
                           {
                             "nid": -206842221,
                             "strtype": "OBJECT/Scroll_chain",
-                            "strval": "True",
+                            "strval": "False",
                             "InheritedType": 2
                           },
                           {
@@ -14900,7 +14896,7 @@
                           {
                             "disabled": false,
                             "nid": -559031456,
-                            "strtype": "TABVIEW/EventHandler",
+                            "strtype": "_event/EventHandler",
                             "strval": "VALUE_CHANGED",
                             "childs": [
                               {
@@ -14923,7 +14919,7 @@
                               },
                               {
                                 "nid": 1647649673,
-                                "strtype": "_custom/action",
+                                "strtype": "_event/action",
                                 "strval": "CALL FUNCTION",
                                 "childs": [
                                   {
