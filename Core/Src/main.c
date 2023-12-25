@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "spi.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -33,11 +34,13 @@
 #include "BSP/24C02/24cxx.h"
 #include "BSP/ATK_MD0280/atk_md0280_touch.h"
 #include "BSP/LED/led.h"
+#include "BSP/NRF24L01/24l01.h"
 #include "lvgl.h"
+#include "sl_ui/ui.h"
 
 #include "port/input_dev.h"
 #include "port/lvgl_ctrl.h"
-#include "sl_ui/ui.h"
+#include "radio/radio.h"
 
 /* clang-format off */
 /* USER CODE END Includes */
@@ -83,6 +86,16 @@ void touch_indev_read_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
   data->state = probed_touch_pressed ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
 }
 
+// [FIXME]
+void try_transmit()
+{
+  const char payload[33] = "Greetings!";
+  int ret = NRF24L01_TxPacket((u8 *)payload);
+  char res[16];
+  sprintf(res, "res: %d", ret);
+  lv_label_set_text(ui_CalcFml, res);
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -121,6 +134,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM2_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   /* clang-format on */
 
@@ -134,6 +148,13 @@ int main(void)
     LED0_TOGGLE();
     HAL_Delay(300);
     LED0_TOGGLE();
+    HAL_Delay(300);
+  }
+
+  // Initialize NRF24L01 2.4 Ghz
+  NRF24L01_Init();
+  while (NRF24L01_Check()) {
+    // Indicate a failure upon checking the NRF24L01
     LED1_TOGGLE();
     HAL_Delay(300);
     LED1_TOGGLE();
@@ -153,6 +174,17 @@ int main(void)
   // lvgl's screen refresh will now be called regularly
   HAL_TIM_Base_Start_IT(&htim2);
 
+  // [FIXME] nrf24l01 test
+  // radio_user_t user_id = 0;
+  radio_user_t user_id = 0;
+  if (user_id == 0) {
+    // Act as transmitter
+    radio_init_ptx(0, 1);
+  } else {
+    // Act as receiver
+    radio_init_prx(1);
+  }
+
   /* clang-format off */
   /* USER CODE END 2 */
 
@@ -169,6 +201,17 @@ int main(void)
     probed_touch_pressed =
         atk_md0280_touch_scan(&probed_touch_point_x, &probed_touch_point_y) ==
         ATK_MD0280_TOUCH_EOK;
+
+    // [FIXME]
+    if (user_id == 1) {
+      static tmp_buf[64];
+      if (NRF24L01_RxPacket(tmp_buf) == 0) {
+        tmp_buf[32] = 0; // 加入字符串结束符
+        lv_label_set_text(ui_CalcFml, tmp_buf);
+      } else {
+        lv_label_set_text(ui_CalcFml, "None");
+      }
+    }
 
     // Call lvgl's update handler
     // Then, delay for the required period

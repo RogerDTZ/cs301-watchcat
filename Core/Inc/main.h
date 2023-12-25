@@ -55,9 +55,17 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
+void try_transmit(void);
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define RF24_IRQ_Pin GPIO_PIN_1
+#define RF24_IRQ_GPIO_Port GPIOA
+#define RF24_CE_Pin GPIO_PIN_4
+#define RF24_CE_GPIO_Port GPIOA
+#define RF24_CSN_Pin GPIO_PIN_4
+#define RF24_CSN_GPIO_Port GPIOC
 #define KEY0_Pin GPIO_PIN_5
 #define KEY0_GPIO_Port GPIOC
 #define KEY0_EXTI_IRQn EXTI9_5_IRQn

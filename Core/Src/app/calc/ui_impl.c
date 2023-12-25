@@ -31,7 +31,7 @@ void CalcModeChanged(lv_event_t *e)
   calc_set_mode((enum calc_mode)tab_index);
 }
 
-void CalcCommClicked0(lv_event_t *e) {}
+void CalcCommClicked0(lv_event_t *e) { try_transmit(); }
 void CalcCommClicked1(lv_event_t *e) {}
 void CalcCommClicked2(lv_event_t *e) {}
 void CalcCommClicked3(lv_event_t *e) {}
