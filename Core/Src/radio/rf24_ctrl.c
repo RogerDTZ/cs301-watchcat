@@ -16,12 +16,11 @@ typedef uint8_t pipe_t;
 const uint8_t RADIO_CONF_PIPE_ADDR_0[] = {0x33, 0xe3, 0x13, 0x13, 0x3a};
 const uint8_t RADIO_CONF_PIPE_ADDR_1[] = {0x34, 0xe3, 0x13, 0x13, 0x3a};
 const uint8_t RADIO_CONF_PIPE_ADDR_2[] = {0x35, 0xe3, 0x13, 0x13, 0x3a};
-// const uint8_t RADIO_CONF_PIPE_ADDR_3[] = {0x36, 0xe3, 0x13, 0x13, 0x3a};
-// const uint8_t RADIO_CONF_PIPE_ADDR_4[] = {0x37, 0xe3, 0x13, 0x13, 0x3a};
-// const uint8_t RADIO_CONF_PIPE_ADDR_5[] = {0x38, 0xe3, 0x13, 0x13, 0x3a};
 
 static enum radio_mode radio_mode = RADIO_MODE_UNINIT;
 static radio_uid_t local_uid;
+radio_uid_t tx_uid_fr;
+radio_uid_t tx_uid_to;
 
 inline static uint8_t pipe_encode(pipe_t pid) { return 1u << pid; }
 
@@ -144,6 +143,9 @@ void radio_init_ptx(radio_uid_t uid_fr, radio_uid_t uid_to)
 {
   assert(0 <= uid_fr && uid_fr < USER_NUM);
   assert(0 <= uid_to && uid_to < USER_NUM);
+
+  tx_uid_fr = uid_fr;
+  tx_uid_to = uid_to;
 
   const uint8_t *pipe_addr = get_pipe_addr(pipe_connecting(uid_fr, uid_to));
 

@@ -79,6 +79,13 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+uint32_t tick_50hz;
+
+uint32_t get_50hz_tick()
+{
+  return tick_50hz;
+}
+
 void touch_indev_read_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
 {
   data->point.x = (lv_coord_t)probed_touch_point_x;

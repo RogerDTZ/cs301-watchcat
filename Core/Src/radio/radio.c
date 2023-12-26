@@ -1,6 +1,10 @@
 #include "radio/radio.h"
 
+#include <stdlib.h>
 #include <string.h>
+
+#include "SYSTEM/delay/delay.h"
+#include "main.h"
 
 #include "BSP/NRF24L01/24l01.h"
 
@@ -14,6 +18,8 @@ static const uint16_t magic_number = 0x1353u;
 #define CHUNK_PAYLOAD_SIZE (TX_PLOAD_WIDTH - sizeof(magic_number))
 
 static radio_uid_t local_uid = 0xFF; // Uninited
+extern radio_uid_t tx_uid_fr;
+extern radio_uid_t tx_uid_to;
 
 static uint8_t tx_payload[TX_PLOAD_WIDTH];
 
@@ -50,12 +56,16 @@ static void radio_send_transmit(uint8_t out_buf[], pkt_size_t size)
     memset(tx_payload + sizeof(magic_number) + chunk_size, 0,
            CHUNK_PAYLOAD_SIZE - chunk_size);
 
-    do {
+    while (true) {
       res = NRF24L01_TxPacket(tx_payload);
-      // Transmit until success.
-      // This blocks everything
-      // [TODO] consider return "try later" signal
-    } while (!(res & TX_OK));
+      if (res & TX_OK) {
+        break;
+      }
+      // Switch back to PRX mode for a while
+      radio_init_prx(local_uid);
+      delay_ms(rand() % 10 + 1);
+      radio_init_ptx(tx_uid_fr, tx_uid_to);
+    }
 
     curr += chunk_size;
     size -= chunk_size;
@@ -164,6 +174,10 @@ int radio_send(radio_uid_t uid, const struct radio_prot_packet *pkt)
 {
   assert(local_uid != 0xFF && "Radio not initialized");
   assert(uid < USER_NUM && uid != local_uid && "Invalid uid for send");
+
+  // Re-init random seed for half-duplex randomness
+  srand(get_50hz_tick());
+
   return radio_send_worker(uid, pkt);
 }
 
