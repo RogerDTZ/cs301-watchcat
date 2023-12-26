@@ -339,7 +339,7 @@
                                           {
                                             "nid": 1027059591,
                                             "strtype": "_style/Text_Font",
-                                            "strval": "montserrat_12",
+                                            "strval": "montserrat_10",
                                             "InheritedType": 3
                                           }
                                         ],
@@ -640,8 +640,7 @@
                                 "InheritedType": 11
                               }
                             ],
-                            "saved_objtypeKey": "BUTTON",
-                            "tree_closed": true
+                            "saved_objtypeKey": "BUTTON"
                           },
                           {
                             "guid": "GUID59497505-867763S3872359",
@@ -1240,8 +1239,7 @@
                                 "InheritedType": 11
                               }
                             ],
-                            "saved_objtypeKey": "BUTTON",
-                            "tree_closed": true
+                            "saved_objtypeKey": "BUTTON"
                           },
                           {
                             "guid": "GUID28735875-874268S9702359",
@@ -1559,7 +1557,7 @@
                                           {
                                             "nid": -1878636226,
                                             "strtype": "_style/Text_Font",
-                                            "strval": "montserrat_12",
+                                            "strval": "montserrat_10",
                                             "InheritedType": 3
                                           }
                                         ],
@@ -1860,8 +1858,7 @@
                                 "InheritedType": 11
                               }
                             ],
-                            "saved_objtypeKey": "BUTTON",
-                            "tree_closed": true
+                            "saved_objtypeKey": "BUTTON"
                           }
                         ],
                         "locked": false,
@@ -2150,8 +2147,7 @@
                             "InheritedType": 11
                           }
                         ],
-                        "saved_objtypeKey": "PANEL",
-                        "tree_closed": true
+                        "saved_objtypeKey": "PANEL"
                       },
                       {
                         "guid": "GUID9976388-865023S7232359",
@@ -2432,7 +2428,22 @@
                                   },
                                   {
                                     "part": "lv.PART.MAIN",
-                                    "childs": [],
+                                    "childs": [
+                                      {
+                                        "nid": 2041541934,
+                                        "strtype": "_style/StyleState",
+                                        "strval": "DEFAULT",
+                                        "childs": [
+                                          {
+                                            "nid": 739400472,
+                                            "strtype": "_style/Text_Font",
+                                            "strval": "montserrat_10",
+                                            "InheritedType": 3
+                                          }
+                                        ],
+                                        "InheritedType": 1
+                                      }
+                                    ],
                                     "nid": -511720911,
                                     "strtype": "LABEL/Style_main",
                                     "strval": "lv.PART.MAIN, Text, Rectangle, Pad",
@@ -3003,8 +3014,7 @@
                             "InheritedType": 11
                           }
                         ],
-                        "saved_objtypeKey": "PANEL",
-                        "tree_closed": true
+                        "saved_objtypeKey": "PANEL"
                       }
                     ],
                     "locked": false,
@@ -3273,8 +3283,7 @@
                         "InheritedType": 11
                       }
                     ],
-                    "saved_objtypeKey": "CONTAINER",
-                    "tree_closed": true
+                    "saved_objtypeKey": "CONTAINER"
                   },
                   {
                     "guid": "GUID72225429-452238S292354",
