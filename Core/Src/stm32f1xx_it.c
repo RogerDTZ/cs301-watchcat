@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lvgl.h"
+#include "radio/radio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -201,6 +202,20 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles EXTI line1 interrupt.
+  */
+void EXTI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI1_IRQn 0 */
+
+  /* USER CODE END EXTI1_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(RF24_IRQ_Pin);
+  /* USER CODE BEGIN EXTI1_IRQn 1 */
+
+  /* USER CODE END EXTI1_IRQn 1 */
+}
+
+/**
   * @brief This function handles EXTI line[9:5] interrupts.
   */
 void EXTI9_5_IRQHandler(void)
@@ -229,5 +244,18 @@ void TIM2_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+/* clang-format on */
 
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  switch (GPIO_Pin) {
+  case RF24_IRQ_Pin:
+    radio_irq_dispatcher();
+    break;
+  default:
+    break;
+  }
+}
+
+/* clang-format off */
 /* USER CODE END 1 */

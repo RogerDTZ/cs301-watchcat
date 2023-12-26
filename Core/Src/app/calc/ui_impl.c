@@ -1,8 +1,11 @@
+#include <stdio.h>
+
 #include "lvgl.h"
 #include "sl_ui/ui.h"
 #include "sl_ui/ui_events.h"
 
-#include "app/calc/calc.h"
+#include "app/calc.h"
+#include "radio/radio.h"
 
 /*=============================================================================
                                UI controllers
@@ -24,6 +27,11 @@ void CalcModeChanged(lv_event_t *e)
 {
   lv_obj_t *tabview = lv_event_get_target(e);
   uint16_t tab_index = lv_tabview_get_tab_act(tabview);
+
+  // [FIXME] strangely, this function will be called when tab_index read 8192
+  if (tab_index > 2) {
+    return;
+  }
 
   // 0: Common
   // 1: Equation
