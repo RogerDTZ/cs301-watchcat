@@ -54,7 +54,7 @@ u8 NRF24L01_Read_Buf(u8 reg, u8 *pBuf, u8 len)
   return status;    // 返回读到的状态值
 }
 
-u8 NRF24L01_Write_Buf(u8 reg, u8 *pBuf, u8 len)
+u8 NRF24L01_Write_Buf(u8 reg, const u8 *pBuf, u8 len)
 {
   u8 status, u8_ctr;
   NRF24L01_CSN = 0;                 // 使能SPI传输

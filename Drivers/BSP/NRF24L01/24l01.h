@@ -79,7 +79,7 @@ typedef uint8_t u8;
 u8 NRF24L01_Write_Reg(u8 reg, u8 value);
 u8 NRF24L01_Read_Reg(u8 reg);
 u8 NRF24L01_Read_Buf(u8 reg, u8 *pBuf, u8 len);
-u8 NRF24L01_Write_Buf(u8 reg, u8 *pBuf, u8 len);
+u8 NRF24L01_Write_Buf(u8 reg, const u8 *pBuf, u8 len);
 
 void NRF24L01_Init(); // 初始化
 u8 NRF24L01_Check();  // 检查24L01是否存在

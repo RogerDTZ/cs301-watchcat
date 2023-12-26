@@ -5,12 +5,12 @@
 #include <stdint.h>
 
 typedef uint32_t tick_t;
-typedef uint8_t radio_user_t;
+typedef uint8_t radio_uid_t;
 typedef uint8_t radio_session_t;
 typedef uint8_t radio_msg_len_t;
 typedef void (*radio_outbound_callback_t)(void *body, bool success);
 
-#define CLIENT_NUM (3)
+#define USER_NUM (3)
 
 enum radio_prot_cmd {
   RADIO_PROT_CMD_HEARTBEAT,
@@ -20,19 +20,19 @@ enum radio_prot_cmd {
 };
 
 struct radio_prot_msg {
-  radio_user_t id;         // messager's id
+  radio_uid_t id;          // messager's id
   radio_session_t session; // session of the message
   radio_msg_len_t len;
   const char *msg;
 };
 
 struct radio_prot_invite {
-  radio_user_t id;         // inviter's id
+  radio_uid_t id;          // inviter's id
   radio_session_t session; // session to join
 };
 
 struct radio_prot_join {
-  radio_user_t id;         // joiner's id
+  radio_uid_t id;          // joiner's id
   radio_session_t session; // session to join
 };
 
@@ -58,12 +58,17 @@ enum radio_mode {
 /**
  * Initialize the NRF24L01 as a receiver.
  */
-void radio_init_prx(radio_user_t user);
+void radio_init_prx(radio_uid_t uid);
 
 /**
  * Initialize the NRF24L01 as a transmitter.
  */
-void radio_init_ptx(radio_user_t user_from, radio_user_t user_to);
+void radio_init_ptx(radio_uid_t uid_fr, radio_uid_t uid_to);
+
+/**
+ * IRQ dispatcher
+ */
+void radio_irq_dispatcher();
 
 /**
  * Send a constructed radio protocol packet to a remote.
@@ -71,25 +76,20 @@ void radio_init_ptx(radio_user_t user_from, radio_user_t user_to);
  * or failed to transferred, or timeout.
  * Timeout is ignored if set to 0.
  */
-void radio_send(radio_user_t id, const struct radio_prot_packet *pkt,
+void radio_send(radio_uid_t id, const struct radio_prot_packet *pkt,
                 tick_t timeout, radio_outbound_callback_t callback);
-
-/**
- * The receiver radio detects an inbound packet.
- */
-void radio_accept_inbound_packet();
 
 /**
  * Poll on packets received from the remote.
  * Return NULL if there is no inbound.
  * Corresponding handlers will be invoked.
  */
-struct radio_prot_packet *radio_poll(radio_user_t id);
+struct radio_prot_packet *radio_poll(radio_uid_t id);
 
 // Extern handlers of radio inbound packet
 // Structs will be freed after the call. So do not refer to them later
 
-void radio_event_handler_heartbeat(radio_user_t id);
+void radio_event_handler_heartbeat(radio_uid_t id);
 void radio_event_handler_message(struct radio_prot_msg *prot_msg);
 void radio_event_handler_invite(struct radio_prot_invite *prot_invite);
 void radio_event_handler_join(struct radio_prot_invite *prot_join);
