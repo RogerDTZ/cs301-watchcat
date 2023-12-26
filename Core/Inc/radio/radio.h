@@ -94,7 +94,4 @@ void radio_event_handler_message(struct radio_prot_msg *prot_msg);
 void radio_event_handler_invite(struct radio_prot_invite *prot_invite);
 void radio_event_handler_join(struct radio_prot_invite *prot_join);
 
-void radio_test_set_mode(int id);
-void radio_test_send(int target);
-
 #endif /* __RADIO_H__ */

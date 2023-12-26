@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-#include "BSP/NRF24L01/24l01.h"
 #include "lvgl.h"
 #include "sl_ui/ui.h"
 #include "sl_ui/ui_events.h"
@@ -38,13 +37,11 @@ void CalcModeChanged(lv_event_t *e)
   // 1: Equation
   // 2: Binary
   calc_set_mode((enum calc_mode)tab_index);
-
-  radio_test_set_mode(tab_index);
 }
 
-void CalcCommClicked0(lv_event_t *e) { radio_test_send(0); }
-void CalcCommClicked1(lv_event_t *e) { radio_test_send(1); }
-void CalcCommClicked2(lv_event_t *e) { radio_test_send(2); }
+void CalcCommClicked0(lv_event_t *e) {}
+void CalcCommClicked1(lv_event_t *e) {}
+void CalcCommClicked2(lv_event_t *e) {}
 void CalcCommClicked3(lv_event_t *e) {}
 void CalcCommClicked4(lv_event_t *e) {}
 void CalcCommClicked5(lv_event_t *e) {}
@@ -79,6 +76,6 @@ void BinaryEqual(lv_event_t *e) {}
 
 void BinaryClear(lv_event_t *e) {}
 
-void BinaryClicked0(lv_event_t *e) { radio_test_send(0); }
+void BinaryClicked0(lv_event_t *e) {}
 
-void BinaryClicked1(lv_event_t *e) { radio_test_send(1); }
+void BinaryClicked1(lv_event_t *e) {}

@@ -34,7 +34,6 @@
 #include "BSP/24C02/24cxx.h"
 #include "BSP/ATK_MD0280/atk_md0280_touch.h"
 #include "BSP/LED/led.h"
-#include "BSP/NRF24L01/24l01.h"
 #include "lvgl.h"
 #include "sl_ui/ui.h"
 
@@ -163,8 +162,6 @@ int main(void)
   // Enable TIM2: 50 Hz
   // lvgl's screen refresh will now be called regularly
   HAL_TIM_Base_Start_IT(&htim2);
-
-  radio_test_set_mode(0);
 
   /* clang-format off */
   /* USER CODE END 2 */
