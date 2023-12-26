@@ -69,7 +69,7 @@ static uint8_t pipes_related(radio_user_t x)
   return code;
 }
 
-static uint8_t *get_pipe_addr(uint8_t id)
+static const uint8_t *get_pipe_addr(uint8_t id)
 {
   assert(0 <= id && id < PIPE_NUM);
 
@@ -142,7 +142,8 @@ void radio_init_ptx(radio_user_t user_from, radio_user_t user_to)
   assert(0 <= user_from && user_from < CLIENT_NUM);
   assert(0 <= user_to && user_to < CLIENT_NUM);
 
-  const uint8_t *pipe_addr = get_pipe_addr(pipe_connecting(user_from, user_to));
+  uint8_t *pipe_addr =
+      (uint8_t *)get_pipe_addr(pipe_connecting(user_from, user_to));
 
   NRF24L01_CE = 0;
 
@@ -180,6 +181,6 @@ void radio_accept_inbound_packet()
   if (NRF24L01_RxPacket(rx_buf + 3, &rx_pipe) == 0) {
     rx_buf[0] = '0' + pipe_sender(rx_pipe);
     rx_buf[3 + 32] = 0;
-    lv_label_set_text(ui_CalcFml, rx_buf);
+    lv_label_set_text(ui_CalcFml, (const char *)rx_buf);
   }
 }

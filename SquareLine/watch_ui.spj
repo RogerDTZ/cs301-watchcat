@@ -4239,7 +4239,7 @@
                                     "strtype": "OBJECT/Position",
                                     "intarray": [
                                       -40,
-                                      70
+                                      68
                                     ],
                                     "InheritedType": 7
                                   },
@@ -17276,8 +17276,7 @@
                                 "InheritedType": 11
                               }
                             ],
-                            "saved_objtypeKey": "TABPAGE",
-                            "tree_closed": true
+                            "saved_objtypeKey": "TABPAGE"
                           },
                           {
                             "guid": "GUID70032525-926307S1802359",

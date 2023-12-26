@@ -2,7 +2,10 @@
 
 #include <stdio.h>
 
+#include "BSP/NRF24L01/24l01.h"
 #include "sl_ui/ui.h"
+
+#include "app/calc/calc.h"
 
 static int local_id;
 
