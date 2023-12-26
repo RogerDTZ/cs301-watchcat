@@ -1,4 +1,4 @@
-#include "app/calc/calc.h"
+#include "app/calc.h"
 
 static enum calc_mode mode;
 

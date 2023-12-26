@@ -3,7 +3,6 @@
 #include "spi.h"
 
 #include "BSP/NRF24L01/24l01.h"
-#include "sl_ui/ui.h"
 
 #include "radio/radio.h"
 
@@ -40,7 +39,7 @@ static uint8_t pipe_connecting(radio_uid_t x, radio_uid_t y)
   }
 }
 
-static uint8_t get_pipe_sender(uint8_t id)
+static radio_uid_t get_pipe_sender(uint8_t id)
 {
   switch (id) {
   case 0:
@@ -180,6 +179,29 @@ void radio_init_ptx(radio_uid_t uid_fr, radio_uid_t uid_to)
   radio_mode = RADIO_MODE_TX;
 }
 
+void radio_enable_rx_irq(bool enable)
+{
+  NRF24L01_CE = 0;
+
+  uint8_t config;
+
+  if (!enable) {
+    config = NRF24L01_Read_Reg(CONFIG);
+    config &= ~MASK_RX_DR;
+    NRF24L01_Write_Reg(NRF_WRITE_REG + CONFIG, config);
+  } else {
+    config = NRF24L01_Read_Reg(CONFIG);
+    config |= MASK_RX_DR;
+    NRF24L01_Write_Reg(NRF_WRITE_REG + CONFIG, config);
+  }
+
+  NRF24L01_CE = 1;
+
+  if (enable) {
+    radio_irq_dispatcher();
+  }
+}
+
 void radio_irq_dispatcher()
 {
   uint8_t status = NRF24L01_Read_Reg(STATUS);
@@ -187,15 +209,15 @@ void radio_irq_dispatcher()
   // Detect inbound payload
   if (radio_mode == RADIO_MODE_RX && (status & RX_OK)) {
     uint8_t rx_pipe = (status & STATUS_RX_P_NO_MASK) >> 1;
-    static uint8_t rx_buf[RX_PLOAD_WIDTH + 5] = "X: ";
+    radio_uid_t sender = get_pipe_sender(rx_pipe);
 
-    NRF24L01_Read_Buf(RD_RX_PLOAD, rx_buf + 3, RX_PLOAD_WIDTH);
+    static uint8_t rx_payload[RX_PLOAD_WIDTH];
+    NRF24L01_Read_Buf(RD_RX_PLOAD, rx_payload, RX_PLOAD_WIDTH);
     NRF24L01_Write_Reg(FLUSH_RX, 0xFF);
+
+    radio_handle_inbound(sender, rx_payload);
+
     // Clear interrupts
     NRF24L01_Write_Reg(NRF_WRITE_REG + STATUS, RX_OK);
-
-    rx_buf[0] = '0' + get_pipe_sender(rx_pipe);
-    rx_buf[3 + 32] = 0;
-    lv_label_set_text(ui_CalcFml, (const char *)rx_buf);
   }
 }

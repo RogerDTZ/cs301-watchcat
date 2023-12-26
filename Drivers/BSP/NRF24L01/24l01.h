@@ -40,6 +40,8 @@
 #define DYNPD           0x1C
 #define FEATURE         0x1D
 
+#define MASK_RX_DR      ((uint8_t)0x40u)
+
 #define MAX_TX  		0x10  //达到最大发送次数中断
 #define TX_OK   		0x20  //TX发送完成中断
 #define RX_OK   		0x40  //接收到数据中断

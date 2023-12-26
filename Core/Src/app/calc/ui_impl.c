@@ -4,7 +4,7 @@
 #include "sl_ui/ui.h"
 #include "sl_ui/ui_events.h"
 
-#include "app/calc/calc.h"
+#include "app/calc.h"
 #include "radio/radio.h"
 
 /*=============================================================================

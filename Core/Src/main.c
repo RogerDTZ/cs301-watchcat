@@ -34,6 +34,7 @@
 #include "BSP/24C02/24cxx.h"
 #include "BSP/ATK_MD0280/atk_md0280_touch.h"
 #include "BSP/LED/led.h"
+#include "BSP/NRF24L01/24l01.h"
 #include "lvgl.h"
 #include "sl_ui/ui.h"
 
