@@ -62,6 +62,7 @@ void try_transmit(void);
 /* Private defines -----------------------------------------------------------*/
 #define RF24_IRQ_Pin GPIO_PIN_1
 #define RF24_IRQ_GPIO_Port GPIOA
+#define RF24_IRQ_EXTI_IRQn EXTI1_IRQn
 #define RF24_CE_Pin GPIO_PIN_4
 #define RF24_CE_GPIO_Port GPIOA
 #define RF24_CSN_Pin GPIO_PIN_4

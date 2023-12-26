@@ -49,14 +49,21 @@ struct radio_prot_outbound {
   radio_outbound_callback_t callback;
 };
 
-void radio_init_prx(radio_user_t user);
-void radio_init_ptx(radio_user_t user_from, radio_user_t user_to);
+enum radio_mode {
+  RADIO_MODE_UNINIT,
+  RADIO_MODE_RX,
+  RADIO_MODE_TX,
+};
 
 /**
- * Initialize the NRF24L01 hardware.
- * Initiate the radio with the specified user ID.
+ * Initialize the NRF24L01 as a receiver.
  */
-void radio_init(radio_user_t id);
+void radio_init_prx(radio_user_t user);
+
+/**
+ * Initialize the NRF24L01 as a transmitter.
+ */
+void radio_init_ptx(radio_user_t user_from, radio_user_t user_to);
 
 /**
  * Send a constructed radio protocol packet to a remote.
@@ -66,6 +73,11 @@ void radio_init(radio_user_t id);
  */
 void radio_send(radio_user_t id, const struct radio_prot_packet *pkt,
                 tick_t timeout, radio_outbound_callback_t callback);
+
+/**
+ * The receiver radio detects an inbound packet.
+ */
+void radio_accept_inbound_packet();
 
 /**
  * Poll on packets received from the remote.
@@ -81,5 +93,8 @@ void radio_event_handler_heartbeat(radio_user_t id);
 void radio_event_handler_message(struct radio_prot_msg *prot_msg);
 void radio_event_handler_invite(struct radio_prot_invite *prot_invite);
 void radio_event_handler_join(struct radio_prot_invite *prot_join);
+
+void radio_test_set_mode(int id);
+void radio_test_send(int target);
 
 #endif /* __RADIO_H__ */

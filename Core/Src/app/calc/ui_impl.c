@@ -1,8 +1,12 @@
+#include <stdio.h>
+
+#include "BSP/NRF24L01/24l01.h"
 #include "lvgl.h"
 #include "sl_ui/ui.h"
 #include "sl_ui/ui_events.h"
 
 #include "app/calc/calc.h"
+#include "radio/radio.h"
 
 /*=============================================================================
                                UI controllers
@@ -25,15 +29,22 @@ void CalcModeChanged(lv_event_t *e)
   lv_obj_t *tabview = lv_event_get_target(e);
   uint16_t tab_index = lv_tabview_get_tab_act(tabview);
 
+  // [FIXME] strangely, this function will be called when tab_index read 8192
+  if (tab_index > 2) {
+    return;
+  }
+
   // 0: Common
   // 1: Equation
   // 2: Binary
   calc_set_mode((enum calc_mode)tab_index);
+
+  radio_test_set_mode(tab_index);
 }
 
-void CalcCommClicked0(lv_event_t *e) { try_transmit(); }
-void CalcCommClicked1(lv_event_t *e) {}
-void CalcCommClicked2(lv_event_t *e) {}
+void CalcCommClicked0(lv_event_t *e) { radio_test_send(0); }
+void CalcCommClicked1(lv_event_t *e) { radio_test_send(1); }
+void CalcCommClicked2(lv_event_t *e) { radio_test_send(2); }
 void CalcCommClicked3(lv_event_t *e) {}
 void CalcCommClicked4(lv_event_t *e) {}
 void CalcCommClicked5(lv_event_t *e) {}
@@ -68,6 +79,6 @@ void BinaryEqual(lv_event_t *e) {}
 
 void BinaryClear(lv_event_t *e) {}
 
-void BinaryClicked0(lv_event_t *e) {}
+void BinaryClicked0(lv_event_t *e) { radio_test_send(0); }
 
-void BinaryClicked1(lv_event_t *e) {}
+void BinaryClicked1(lv_event_t *e) { radio_test_send(1); }
