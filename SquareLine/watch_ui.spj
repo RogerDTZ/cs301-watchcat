@@ -4347,7 +4347,7 @@
                                   {
                                     "nid": 1898487088,
                                     "strtype": "OBJECT/Name",
-                                    "strval": "Label4",
+                                    "strval": "ChatDesc",
                                     "InheritedType": 10
                                   },
                                   {
@@ -4389,7 +4389,7 @@
                                     "strtype": "OBJECT/Size",
                                     "intarray": [
                                       100,
-                                      45
+                                      26
                                     ],
                                     "InheritedType": 7
                                   },
@@ -4605,7 +4605,7 @@
                                   {
                                     "nid": 1313860142,
                                     "strtype": "LABEL/Text",
-                                    "strval": "123123324",
+                                    "strval": "No chat selected",
                                     "InheritedType": 10
                                   },
                                   {
@@ -4678,7 +4678,7 @@
                                 "strtype": "OBJECT/Position",
                                 "intarray": [
                                   0,
-                                  0
+                                  -10
                                 ],
                                 "InheritedType": 7
                               },
@@ -4687,15 +4687,15 @@
                                 "flags": 17,
                                 "strtype": "OBJECT/Size",
                                 "intarray": [
-                                  110,
-                                  50
+                                  125,
+                                  38
                                 ],
                                 "InheritedType": 7
                               },
                               {
                                 "nid": -326090558,
                                 "strtype": "OBJECT/Align",
-                                "strval": "TOP_LEFT",
+                                "strval": "TOP_MID",
                                 "InheritedType": 3
                               },
                               {
@@ -39989,7 +39989,7 @@
     "theme_color2": 0,
     "uiExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
     "projectExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
-    "backup_cnt": 307,
+    "backup_cnt": 310,
     "autosave_cnt": 0,
     "lvgl_version": "8.3.3",
     "callfuncsexport": "C_FILE",

@@ -201,7 +201,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim3);
 
   // [FIXME] This should be called upon first opening chat app
-  chat_init(1);
+  chat_init(0);
 
   /* clang-format off */
   /* USER CODE END 2 */

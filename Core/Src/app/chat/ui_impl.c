@@ -11,7 +11,7 @@
 static void on_chat_switching()
 {
   // [TODO] according to ui_curr_session, display content of the chat
-  lv_label_set_text_fmt(ui_Label4, "This is chat %d", (int)ui_curr_session);
+  lv_label_set_text_fmt(ui_ChatDesc, "This is chat %d", (int)ui_curr_session);
 }
 
 static void set_chatter_online_ui(int ui_id, bool online)

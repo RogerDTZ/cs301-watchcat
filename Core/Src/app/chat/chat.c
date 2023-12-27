@@ -95,7 +95,7 @@ void radio_event_handler_message(struct radio_prot_msg *msg)
   radio_uid_t sender = msg->id;
   radio_session_t session = msg->session;
 
-  lv_label_set_text_fmt(ui_Label4, "(%d, %d): %s", session, sender, msg->msg);
+  lv_label_set_text_fmt(ui_ChatDesc, "(%d, %d): %s", session, sender, msg->msg);
 }
 
 void radio_event_handler_invite(struct radio_prot_invite *invite)
