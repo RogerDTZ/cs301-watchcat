@@ -10,6 +10,8 @@
 
 #include "util/circular_queue.h"
 
+#define TX_RETRY_CNT (10)
+
 #define OUTBOUND_BUFFER_SIZE (64)
 #define CIRCULAR_BUFFER_SIZE (256)
 
@@ -43,11 +45,13 @@ static pkt_size_t get_packet_size(const struct radio_prot_packet *pkt)
   assert(0 && "Unknown command");
 }
 
-static void radio_send_transmit(uint8_t out_buf[], pkt_size_t size)
+/**
+ * Return bytes transmitted
+ */
+static pkt_size_t radio_send_transmit(uint8_t out_buf[], pkt_size_t size)
 {
   // Send payloads
   size_t chunk_size;
-  int res;
   uint8_t *curr = out_buf;
   *(uint16_t *)tx_payload = magic_number;
   while (size > 0) {
@@ -56,9 +60,11 @@ static void radio_send_transmit(uint8_t out_buf[], pkt_size_t size)
     memset(tx_payload + sizeof(magic_number) + chunk_size, 0,
            CHUNK_PAYLOAD_SIZE - chunk_size);
 
-    while (true) {
-      res = NRF24L01_TxPacket(tx_payload);
+    bool success = false;
+    for (int t = 0; t < TX_RETRY_CNT; t++) {
+      int res = NRF24L01_TxPacket(tx_payload);
       if (res & TX_OK) {
+        success = true;
         break;
       }
       // Switch back to PRX mode for a while
@@ -66,28 +72,39 @@ static void radio_send_transmit(uint8_t out_buf[], pkt_size_t size)
       delay_ms(rand() % 10 + 1);
       radio_init_ptx(tx_uid_fr, tx_uid_to);
     }
+    if (!success) {
+      break;
+    }
 
     curr += chunk_size;
     size -= chunk_size;
   }
+  return curr - out_buf;
 }
 
-static int radio_send_worker_single(radio_uid_t uid, uint8_t out_buf[],
-                                    pkt_size_t size)
+/**
+ * Return true if success
+ */
+static bool radio_send_worker_single(radio_uid_t uid, uint8_t out_buf[],
+                                     pkt_size_t size)
 {
   // Switch to PTX mode
   radio_init_ptx(local_uid, uid);
 
-  radio_send_transmit(out_buf, size);
+  pkt_size_t res = radio_send_transmit(out_buf, size);
 
   // Switch back to PRX mode
   radio_init_prx(local_uid);
 
-  return 0;
+  return res == size;
 }
 
-static int radio_send_worker_broadcast(uint8_t out_buf[], pkt_size_t size)
+/**
+ * Return true if success
+ */
+static bool radio_send_worker_broadcast(uint8_t out_buf[], pkt_size_t size)
 {
+  bool failed = false;
   for (radio_uid_t uid = 0; uid < USER_NUM; uid++) {
     if (uid == local_uid) {
       continue;
@@ -95,20 +112,21 @@ static int radio_send_worker_broadcast(uint8_t out_buf[], pkt_size_t size)
     // Switch to PTX mode
     radio_init_ptx(local_uid, uid);
 
-    radio_send_transmit(out_buf, size);
+    pkt_size_t res = radio_send_transmit(out_buf, size);
+    failed |= (res < size);
   }
 
   // Switch back to PRX mode
   radio_init_prx(local_uid);
 
-  return 0;
+  return !failed;
 }
 
 /**
  * For this internal worker, uid == 0xFF stands for broadcast.
  */
-static int radio_send_worker(radio_uid_t uid,
-                             const struct radio_prot_packet *pkt)
+static bool radio_send_worker(radio_uid_t uid,
+                              const struct radio_prot_packet *pkt)
 {
   pkt_size_t size = get_packet_size(pkt);
   assert(size < OUTBOUND_BUFFER_SIZE && "Packet too large");
@@ -122,15 +140,19 @@ static int radio_send_worker(radio_uid_t uid,
   switch (pkt->cmd) {
   case RADIO_PROT_CMD_HEARTBEAT:
     *(struct radio_prot_heartbeat *)curr = pkt->body.heartbeat;
+    curr += sizeof(pkt->body.heartbeat);
     break;
   case RADIO_PROT_CMD_MSG:
     *(struct radio_prot_msg *)curr = pkt->body.msg;
+    curr += sizeof(pkt->body.msg);
     break;
   case RADIO_PROT_CMD_INVITE:
     *(struct radio_prot_invite *)curr = pkt->body.invite;
+    curr += sizeof(pkt->body.invite);
     break;
   case RADIO_PROT_CMD_JOIN:
     *(struct radio_prot_join *)curr = pkt->body.join;
+    curr += sizeof(pkt->body.join);
     break;
   default:
     assert(0 && "Unknown command");
@@ -151,7 +173,11 @@ void radio_init(radio_uid_t uid)
   local_uid = uid;
 
   q_in = circular_queue_alloc(CIRCULAR_BUFFER_SIZE);
+
+  radio_init_prx(uid);
 }
+
+radio_uid_t get_uid() { return local_uid; }
 
 void radio_handle_inbound(radio_uid_t sender, const uint8_t *rx_payload)
 {
@@ -170,7 +196,7 @@ void radio_handle_inbound(radio_uid_t sender, const uint8_t *rx_payload)
          "Inbound buffer full");
 }
 
-int radio_send(radio_uid_t uid, const struct radio_prot_packet *pkt)
+bool radio_send(radio_uid_t uid, const struct radio_prot_packet *pkt)
 {
   assert(local_uid != 0xFF && "Radio not initialized");
   assert(uid < USER_NUM && uid != local_uid && "Invalid uid for send");
@@ -181,7 +207,7 @@ int radio_send(radio_uid_t uid, const struct radio_prot_packet *pkt)
   return radio_send_worker(uid, pkt);
 }
 
-int radio_broadcast(const struct radio_prot_packet *pkt)
+bool radio_broadcast(const struct radio_prot_packet *pkt)
 {
   return radio_send_worker(0xFF, pkt);
 }

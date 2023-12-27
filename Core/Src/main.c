@@ -171,6 +171,8 @@ int main(void)
   // lvgl's screen refresh will now be called regularly
   HAL_TIM_Base_Start_IT(&htim2);
 
+  radio_init(0);
+
   /* clang-format off */
   /* USER CODE END 2 */
 

@@ -5,7 +5,6 @@
 #include "sl_ui/ui_events.h"
 
 #include "app/calc.h"
-#include "radio/radio.h"
 
 /*=============================================================================
                                UI controllers

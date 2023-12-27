@@ -4,8 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "app/chat.h"
-
 typedef uint32_t tick_t;
 typedef uint16_t pkt_size_t;
 typedef uint8_t radio_uid_t;
@@ -14,6 +12,8 @@ typedef uint8_t radio_msg_len_t;
 typedef void (*radio_outbound_callback_t)(void *body, bool success);
 
 #define USER_NUM (3)
+
+#define MSG_MAX_LEN (30)
 
 enum radio_prot_cmd {
   RADIO_PROT_CMD_HEARTBEAT,
@@ -64,6 +64,8 @@ enum radio_mode {
  */
 void radio_init(radio_uid_t uid);
 
+radio_uid_t get_uid();
+
 /**
  * Initialize the NRF24L01 as a receiver.
  */
@@ -90,14 +92,14 @@ void radio_handle_inbound(radio_uid_t sender, const uint8_t *rx_payload);
  * Send a constructed radio protocol packet to a remote.
  * If callback is set, it will be call upon a packet is transmitted successfully
  * or failed to transferred, or timeout.
- * @return 0 for success, 1 for try later
+ * @return true for success, 1 for try later
  */
-int radio_send(radio_uid_t uid, const struct radio_prot_packet *pkt);
+bool radio_send(radio_uid_t uid, const struct radio_prot_packet *pkt);
 
 /**
  * Send a constructed radio protocol packet to all remotes.
  */
-int radio_broadcast(const struct radio_prot_packet *pkt);
+bool radio_broadcast(const struct radio_prot_packet *pkt);
 
 /**
  * Poll on packets received from the remote.

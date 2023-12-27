@@ -1,6 +1,14 @@
 #include "app/chat.h"
 
-#include "radio/radio.h"
+void action_invite(radio_uid_t uid, radio_session_t session)
+{
+  struct radio_prot_packet pkt;
+  pkt.cmd = RADIO_PROT_CMD_INVITE;
+  pkt.body.invite.id = get_uid();
+  pkt.body.invite.session = session;
+
+  radio_send(uid, &pkt);
+}
 
 void radio_event_handler_heartbeat(struct radio_prot_heartbeat *prot_heartbeat)
 {
