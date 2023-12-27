@@ -38,9 +38,9 @@
 #include "lvgl.h"
 #include "sl_ui/ui.h"
 
+#include "app/chat.h"
 #include "port/input_dev.h"
 #include "port/lvgl_ctrl.h"
-#include "radio/radio.h"
 
 /* clang-format off */
 /* USER CODE END Includes */
@@ -64,6 +64,11 @@
 
 /* USER CODE BEGIN PV */
 
+// ms, updated every 500 ms
+static uint32_t tick_2hz;
+// ms, updated every 20 ms
+static uint32_t tick_50hz;
+
 static uint16_t probed_touch_point_x;
 static uint16_t probed_touch_point_y;
 static bool probed_touch_pressed;
@@ -79,7 +84,26 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-uint32_t tick_50hz;
+void update_2hz(uint32_t delta)
+{
+  assert(delta == 500);
+  tick_2hz += delta;
+
+  chat_update(delta);
+}
+
+void update_50hz(uint32_t delta)
+{
+  assert(delta == 20);
+  tick_50hz += delta;
+
+  lv_tick_inc(delta);
+}
+
+uint32_t get_2hz_tick()
+{
+  return tick_2hz;
+}
 
 uint32_t get_50hz_tick()
 {
@@ -132,11 +156,14 @@ int main(void)
   MX_GPIO_Init();
   MX_TIM2_Init();
   MX_SPI1_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   /* clang-format on */
 
   // Initialize LEDs
   led_init();
+  LED0(1);
+  LED1(1);
 
   // Initialize EEPROM
   AT24CXX_Init();
@@ -168,10 +195,13 @@ int main(void)
   ui_init();
 
   // Enable TIM2: 50 Hz
-  // lvgl's screen refresh will now be called regularly
   HAL_TIM_Base_Start_IT(&htim2);
 
-  radio_init(0);
+  // Enable TIM3: 2 Hz
+  HAL_TIM_Base_Start_IT(&htim3);
+
+  // [FIXME] This should be called upon first opening chat app
+  chat_init(2);
 
   /* clang-format off */
   /* USER CODE END 2 */

@@ -2,6 +2,7 @@
 
 #include "spi.h"
 
+#include "BSP/LED/led.h"
 #include "BSP/NRF24L01/24l01.h"
 
 #include "radio/radio.h"
@@ -18,8 +19,9 @@ const uint8_t RADIO_CONF_PIPE_ADDR_1[] = {0x34, 0xe3, 0x13, 0x13, 0x3a};
 const uint8_t RADIO_CONF_PIPE_ADDR_2[] = {0x35, 0xe3, 0x13, 0x13, 0x3a};
 
 static enum radio_mode radio_mode = RADIO_MODE_UNINIT;
-static radio_uid_t local_uid;
-radio_uid_t tx_uid_fr;
+
+extern radio_uid_t local_uid;
+
 radio_uid_t tx_uid_to;
 
 inline static uint8_t pipe_encode(pipe_t pid) { return 1u << pid; }
@@ -106,11 +108,9 @@ static void init_rx_pipes(uint8_t enabled_pipes)
   }
 }
 
-void radio_init_prx(radio_uid_t uid)
+void radio_init_prx()
 {
-  assert(0 <= uid && uid < USER_NUM);
-
-  uint8_t recv_pipe_bits = pipes_related(uid);
+  uint8_t recv_pipe_bits = pipes_related(local_uid);
 
   NRF24L01_CE = 0;
 
@@ -135,19 +135,21 @@ void radio_init_prx(radio_uid_t uid)
 
   NRF24L01_CE = 1; // CE为高,进入接收模式
 
-  local_uid = uid;
+  NRF24L01_Write_Reg(FLUSH_RX, 0xFF);
+  NRF24L01_Write_Reg(FLUSH_TX, 0xFF);
+
   radio_mode = RADIO_MODE_RX;
+
+  LED0(1);
 }
 
-void radio_init_ptx(radio_uid_t uid_fr, radio_uid_t uid_to)
+void radio_init_ptx(radio_uid_t uid_to)
 {
-  assert(0 <= uid_fr && uid_fr < USER_NUM);
   assert(0 <= uid_to && uid_to < USER_NUM);
 
-  tx_uid_fr = uid_fr;
   tx_uid_to = uid_to;
 
-  const uint8_t *pipe_addr = get_pipe_addr(pipe_connecting(uid_fr, uid_to));
+  const uint8_t *pipe_addr = get_pipe_addr(pipe_connecting(local_uid, uid_to));
 
   NRF24L01_CE = 0;
 
@@ -177,8 +179,32 @@ void radio_init_ptx(radio_uid_t uid_fr, radio_uid_t uid_to)
 
   NRF24L01_CE = 1; // CE为高,进入接收模式
 
-  local_uid = uid_fr;
+  NRF24L01_Write_Reg(FLUSH_RX, 0xFF);
+  NRF24L01_Write_Reg(FLUSH_TX, 0xFF);
+
   radio_mode = RADIO_MODE_TX;
+
+  LED0(0);
+}
+
+void radio_ptx_change_recv(radio_uid_t uid_to)
+{
+  assert(radio_mode = RADIO_MODE_TX);
+  assert(0 <= uid_to && uid_to < USER_NUM);
+
+  tx_uid_to = uid_to;
+
+  const uint8_t *pipe_addr = get_pipe_addr(pipe_connecting(local_uid, uid_to));
+
+  NRF24L01_CE = 0;
+
+  // Clear status
+  NRF24L01_Write_Reg(NRF_WRITE_REG + STATUS, 0b01110000);
+  // Configure TX addr and RX addr (for ACK)
+  NRF24L01_Write_Buf(NRF_WRITE_REG + TX_ADDR, pipe_addr, TX_ADR_WIDTH);
+  NRF24L01_Write_Buf(NRF_WRITE_REG + RX_ADDR_P0, pipe_addr, RX_ADR_WIDTH);
+
+  NRF24L01_CE = 1; // CE为高,进入接收模式
 }
 
 void radio_enable_rx_irq(bool enable)

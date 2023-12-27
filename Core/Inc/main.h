@@ -55,7 +55,11 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
+uint32_t get_2hz_tick();
 uint32_t get_50hz_tick();
+
+void update_2hz(uint32_t delta);
+void update_50hz(uint32_t delta);
 
 /* USER CODE END EFP */
 

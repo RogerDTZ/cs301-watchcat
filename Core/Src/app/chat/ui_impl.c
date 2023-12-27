@@ -59,16 +59,29 @@ static radio_uid_t get_single_chatter_uid(int ui_id)
   }
 }
 
+void event_user_online(radio_uid_t uid)
+{
+  lv_label_set_text_fmt(ui_Label4, "User %d is online", uid);
+}
+
+void event_user_offline(radio_uid_t uid)
+{
+  lv_label_set_text_fmt(ui_Label4, "User %d is offline", uid);
+}
+
 void ChatChat1Clicked(lv_event_t *e)
 {
   radio_uid_t chatter = get_single_chatter_uid(1);
-  action_invite(chatter, get_session_with(chatter));
+  action_message(get_session_with(chatter), "Hello! You are my chat 1");
 }
 
 void ChatChat2Clicked(lv_event_t *e)
 {
   radio_uid_t chatter = get_single_chatter_uid(2);
-  action_invite(chatter, get_session_with(chatter));
+  action_message(get_session_with(chatter), "Hello! You are my chat 2");
 }
 
-void ChatGroupClicked(lv_event_t *e) {}
+void ChatGroupClicked(lv_event_t *e)
+{
+  action_message(SESSION_ID_0_1_2, "Hello! Speaking in group");
+}

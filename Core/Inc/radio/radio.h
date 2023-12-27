@@ -60,12 +60,18 @@ radio_uid_t get_uid();
 /**
  * Initialize the NRF24L01 as a receiver.
  */
-void radio_init_prx(radio_uid_t uid);
+void radio_init_prx();
 
 /**
  * Initialize the NRF24L01 as a transmitter.
  */
-void radio_init_ptx(radio_uid_t uid_fr, radio_uid_t uid_to);
+void radio_init_ptx(radio_uid_t uid_to);
+
+/**
+ * Change the target address.
+ * Must be called after initialized to PTX.
+ */
+void radio_ptx_change_recv(radio_uid_t uid_to);
 
 void radio_enable_rx_irq(bool enable);
 

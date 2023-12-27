@@ -7,13 +7,14 @@
 #include "main.h"
 
 #include "BSP/NRF24L01/24l01.h"
+#include "sl_ui/ui.h"
 
 #include "util/circular_queue.h"
 
-#define TX_RETRY_CNT (10)
+#define TX_RETRY_CNT (3)
 
 #define OUTBOUND_BUFFER_SIZE (64)
-#define CIRCULAR_BUFFER_SIZE (256)
+#define CIRCULAR_BUFFER_SIZE (450)
 
 static const uint16_t magic_number = 0x1353u;
 
@@ -21,8 +22,8 @@ static const uint16_t magic_number = 0x1353u;
 
 #define ALIGN_UP(x, align) (((x) + (align)-1) / (align) * (align))
 
-static radio_uid_t local_uid = 0xFF; // Uninited
-extern radio_uid_t tx_uid_fr;
+radio_uid_t local_uid = 0xFF; // Uninited
+
 extern radio_uid_t tx_uid_to;
 
 static uint8_t tx_payload[TX_PLOAD_WIDTH];
@@ -68,9 +69,9 @@ static pkt_size_t radio_send_transmit(uint8_t out_buf[], pkt_size_t size)
         break;
       }
       // Switch back to PRX mode for a while
-      radio_init_prx(local_uid);
-      delay_ms(rand() % 10 + 1);
-      radio_init_ptx(tx_uid_fr, tx_uid_to);
+      radio_init_prx();
+      delay_ms(rand() % 21 + 10);
+      radio_init_ptx(tx_uid_to);
     }
     if (!success) {
       break;
@@ -89,12 +90,12 @@ static int radio_send_worker_single(radio_uid_t uid, uint8_t out_buf[],
                                     pkt_size_t size)
 {
   // Switch to PTX mode
-  radio_init_ptx(local_uid, uid);
+  radio_init_ptx(uid);
 
   pkt_size_t res = radio_send_transmit(out_buf, size);
 
   // Switch back to PRX mode
-  radio_init_prx(local_uid);
+  radio_init_prx();
 
   return res == size;
 }
@@ -106,12 +107,20 @@ static int radio_send_worker_broadcast(uint8_t out_buf[], pkt_size_t size)
 {
   int res = 0;
 
+  bool first = true;
   for (radio_uid_t uid = 0; uid < USER_NUM; uid++) {
     if (uid == local_uid) {
       continue;
     }
-    // Switch to PTX mode
-    radio_init_ptx(local_uid, uid);
+    radio_init_ptx(uid);
+    if (first) {
+      first = false;
+      // Switch to PTX mode
+      radio_init_ptx(uid);
+    } else {
+      // Change PTX target address
+      radio_ptx_change_recv(uid);
+    }
 
     pkt_size_t res = radio_send_transmit(out_buf, size);
 
@@ -120,7 +129,7 @@ static int radio_send_worker_broadcast(uint8_t out_buf[], pkt_size_t size)
   }
 
   // Switch back to PRX mode
-  radio_init_prx(local_uid);
+  radio_init_prx();
 
   return res;
 }
@@ -174,7 +183,7 @@ void radio_init(radio_uid_t uid)
 
   q_in = circular_queue_alloc(CIRCULAR_BUFFER_SIZE);
 
-  radio_init_prx(uid);
+  radio_init_prx();
 }
 
 radio_uid_t get_uid() { return local_uid; }
@@ -219,7 +228,7 @@ void radio_poll()
   struct radio_prot_packet pkt;
 
   // Disable RX inbound IRQ, which may modify the queue
-  radio_enable_rx_irq(false);
+  // radio_enable_rx_irq(false);
 
   while (!circular_queue_empty(q_in)) {
     int q_size = circular_queue_size(q_in);
@@ -268,5 +277,5 @@ void radio_poll()
     break;
   }
 
-  radio_enable_rx_irq(true);
+  // radio_enable_rx_irq(true);
 }
