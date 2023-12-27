@@ -27,6 +27,9 @@ int circular_queue_push(circular_queue_t *q, uint16_t size, const void *src);
 
 void circular_queue_get(circular_queue_t *q, uint16_t size, void *dst);
 
+void circular_queue_get_off(circular_queue_t *q, uint16_t offset, uint16_t size,
+                            void *dst);
+
 void circular_queue_pop(circular_queue_t *q, uint16_t size);
 
 void circular_queue_free(circular_queue_t *q);

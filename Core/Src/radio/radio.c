@@ -19,6 +19,8 @@ static const uint16_t magic_number = 0x1353u;
 
 #define CHUNK_PAYLOAD_SIZE (TX_PLOAD_WIDTH - sizeof(magic_number))
 
+#define ALIGN_UP(x, align) (((x) + (align)-1) / (align) * (align))
+
 static radio_uid_t local_uid = 0xFF; // Uninited
 extern radio_uid_t tx_uid_fr;
 extern radio_uid_t tx_uid_to;
@@ -37,8 +39,6 @@ static pkt_size_t get_packet_size(const struct radio_prot_packet *pkt)
     return size + sizeof(struct radio_prot_msg);
   case RADIO_PROT_CMD_INVITE:
     return size + sizeof(struct radio_prot_invite);
-  case RADIO_PROT_CMD_JOIN:
-    return size + sizeof(struct radio_prot_join);
   default:
     break;
   }
@@ -46,7 +46,7 @@ static pkt_size_t get_packet_size(const struct radio_prot_packet *pkt)
 }
 
 /**
- * Return bytes transmitted
+ * Return bytes transmitted.
  */
 static pkt_size_t radio_send_transmit(uint8_t out_buf[], pkt_size_t size)
 {
@@ -83,10 +83,10 @@ static pkt_size_t radio_send_transmit(uint8_t out_buf[], pkt_size_t size)
 }
 
 /**
- * Return true if success
+ * Return 1 if success.
  */
-static bool radio_send_worker_single(radio_uid_t uid, uint8_t out_buf[],
-                                     pkt_size_t size)
+static int radio_send_worker_single(radio_uid_t uid, uint8_t out_buf[],
+                                    pkt_size_t size)
 {
   // Switch to PTX mode
   radio_init_ptx(local_uid, uid);
@@ -100,11 +100,12 @@ static bool radio_send_worker_single(radio_uid_t uid, uint8_t out_buf[],
 }
 
 /**
- * Return true if success
+ * Return the number of successful transmission.
  */
-static bool radio_send_worker_broadcast(uint8_t out_buf[], pkt_size_t size)
+static int radio_send_worker_broadcast(uint8_t out_buf[], pkt_size_t size)
 {
-  bool failed = false;
+  int res = 0;
+
   for (radio_uid_t uid = 0; uid < USER_NUM; uid++) {
     if (uid == local_uid) {
       continue;
@@ -113,20 +114,23 @@ static bool radio_send_worker_broadcast(uint8_t out_buf[], pkt_size_t size)
     radio_init_ptx(local_uid, uid);
 
     pkt_size_t res = radio_send_transmit(out_buf, size);
-    failed |= (res < size);
+
+    // broadcast is fault tolerant
+    res += (res == size);
   }
 
   // Switch back to PRX mode
   radio_init_prx(local_uid);
 
-  return !failed;
+  return res;
 }
 
 /**
  * For this internal worker, uid == 0xFF stands for broadcast.
+ * Return the number of success transmission.
  */
-static bool radio_send_worker(radio_uid_t uid,
-                              const struct radio_prot_packet *pkt)
+static int radio_send_worker(radio_uid_t uid,
+                             const struct radio_prot_packet *pkt)
 {
   pkt_size_t size = get_packet_size(pkt);
   assert(size < OUTBOUND_BUFFER_SIZE && "Packet too large");
@@ -149,10 +153,6 @@ static bool radio_send_worker(radio_uid_t uid,
   case RADIO_PROT_CMD_INVITE:
     *(struct radio_prot_invite *)curr = pkt->body.invite;
     curr += sizeof(pkt->body.invite);
-    break;
-  case RADIO_PROT_CMD_JOIN:
-    *(struct radio_prot_join *)curr = pkt->body.join;
-    curr += sizeof(pkt->body.join);
     break;
   default:
     assert(0 && "Unknown command");
@@ -189,11 +189,10 @@ void radio_handle_inbound(radio_uid_t sender, const uint8_t *rx_payload)
     return;
   }
 
-  pkt_size_t size =
-      circular_queue_push(q_in, RX_PLOAD_WIDTH - sizeof(magic_number),
-                          rx_payload + sizeof(magic_number));
-  assert(size == RX_PLOAD_WIDTH - sizeof(magic_number) &&
-         "Inbound buffer full");
+  // Every payload is of length CHUNK_PAYLOAD_SIZE
+  pkt_size_t size = circular_queue_push(q_in, CHUNK_PAYLOAD_SIZE,
+                                        rx_payload + sizeof(magic_number));
+  assert(size == CHUNK_PAYLOAD_SIZE && "Inbound buffer full");
 }
 
 bool radio_send(radio_uid_t uid, const struct radio_prot_packet *pkt)
@@ -204,11 +203,14 @@ bool radio_send(radio_uid_t uid, const struct radio_prot_packet *pkt)
   // Re-init random seed for half-duplex randomness
   srand(get_50hz_tick());
 
-  return radio_send_worker(uid, pkt);
+  return radio_send_worker(uid, pkt) == 1;
 }
 
-bool radio_broadcast(const struct radio_prot_packet *pkt)
+int radio_broadcast(const struct radio_prot_packet *pkt)
 {
+  // Re-init random seed for half-duplex randomness
+  srand(get_50hz_tick());
+
   return radio_send_worker(0xFF, pkt);
 }
 
@@ -228,41 +230,39 @@ void radio_poll()
     switch (pkt.cmd) {
     case RADIO_PROT_CMD_HEARTBEAT:
       if (q_size >= sizeof(pkt.cmd) + sizeof(pkt.body.heartbeat)) {
-        circular_queue_pop(q_in, sizeof(pkt.cmd));
-        circular_queue_get(q_in, sizeof(pkt.body.heartbeat),
-                           &pkt.body.heartbeat);
-        circular_queue_pop(q_in, sizeof(pkt.body.heartbeat));
+        circular_queue_get_off(q_in, sizeof(pkt.cmd),
+                               sizeof(pkt.body.heartbeat), &pkt.body.heartbeat);
+        circular_queue_pop(
+            q_in, ALIGN_UP(sizeof(pkt.cmd) + sizeof(pkt.body.heartbeat),
+                           CHUNK_PAYLOAD_SIZE));
         radio_event_handler_heartbeat(&pkt.body.heartbeat);
         continue;
       }
       break;
     case RADIO_PROT_CMD_MSG:
       if (q_size >= sizeof(pkt.cmd) + sizeof(pkt.body.msg)) {
-        circular_queue_pop(q_in, sizeof(pkt.cmd));
-        circular_queue_get(q_in, sizeof(pkt.body.msg), &pkt.body.msg);
-        circular_queue_pop(q_in, sizeof(pkt.body.msg));
+        circular_queue_get_off(q_in, sizeof(pkt.cmd), sizeof(pkt.body.msg),
+                               &pkt.body.msg);
+        circular_queue_pop(q_in,
+                           ALIGN_UP(sizeof(pkt.cmd) + sizeof(pkt.body.msg),
+                                    CHUNK_PAYLOAD_SIZE));
         radio_event_handler_message(&pkt.body.msg);
         continue;
       }
       break;
     case RADIO_PROT_CMD_INVITE:
       if (q_size >= sizeof(pkt.cmd) + sizeof(pkt.body.invite)) {
-        circular_queue_pop(q_in, sizeof(pkt.cmd));
-        circular_queue_get(q_in, sizeof(pkt.body.invite), &pkt.body.invite);
-        circular_queue_pop(q_in, sizeof(pkt.body.invite));
+        circular_queue_get_off(q_in, sizeof(pkt.cmd), sizeof(pkt.body.invite),
+                               &pkt.body.invite);
+        circular_queue_pop(q_in,
+                           ALIGN_UP(sizeof(pkt.cmd) + sizeof(pkt.body.invite),
+                                    CHUNK_PAYLOAD_SIZE));
         radio_event_handler_invite(&pkt.body.invite);
         continue;
       }
       break;
-    case RADIO_PROT_CMD_JOIN:
-      if (q_size >= sizeof(pkt.cmd) + sizeof(pkt.body.join)) {
-        circular_queue_pop(q_in, sizeof(pkt.cmd));
-        circular_queue_get(q_in, sizeof(pkt.body.join), &pkt.body.join);
-        circular_queue_pop(q_in, sizeof(pkt.body.join));
-        radio_event_handler_join(&pkt.body.join);
-        continue;
-      }
-      break;
+    default:
+      assert(0 && "Unknown command");
     }
     // No packet decoded, end the polling
     break;

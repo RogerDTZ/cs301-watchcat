@@ -8,18 +8,16 @@ typedef uint32_t tick_t;
 typedef uint16_t pkt_size_t;
 typedef uint8_t radio_uid_t;
 typedef uint8_t radio_session_t;
-typedef uint8_t radio_msg_len_t;
 typedef void (*radio_outbound_callback_t)(void *body, bool success);
 
 #define USER_NUM (3)
 
-#define MSG_MAX_LEN (30)
+#define MSG_MAX_LEN (30 + 1)
 
 enum radio_prot_cmd {
   RADIO_PROT_CMD_HEARTBEAT,
   RADIO_PROT_CMD_MSG,
   RADIO_PROT_CMD_INVITE,
-  RADIO_PROT_CMD_JOIN,
 };
 
 struct radio_prot_heartbeat {
@@ -29,17 +27,11 @@ struct radio_prot_heartbeat {
 struct radio_prot_msg {
   radio_uid_t id;          // messager's id
   radio_session_t session; // session of the message
-  radio_msg_len_t len;
   char msg[MSG_MAX_LEN];
 };
 
 struct radio_prot_invite {
   radio_uid_t id;          // inviter's id
-  radio_session_t session; // session to join
-};
-
-struct radio_prot_join {
-  radio_uid_t id;          // joiner's id
   radio_session_t session; // session to join
 };
 
@@ -49,7 +41,6 @@ struct radio_prot_packet {
     struct radio_prot_heartbeat heartbeat;
     struct radio_prot_msg msg;
     struct radio_prot_invite invite;
-    struct radio_prot_join join;
   } body;
 };
 
@@ -98,8 +89,9 @@ bool radio_send(radio_uid_t uid, const struct radio_prot_packet *pkt);
 
 /**
  * Send a constructed radio protocol packet to all remotes.
+ * Return the number of successful transmission.
  */
-bool radio_broadcast(const struct radio_prot_packet *pkt);
+int radio_broadcast(const struct radio_prot_packet *pkt);
 
 /**
  * Poll on packets received from the remote.
@@ -111,9 +103,8 @@ void radio_poll();
 // Extern handlers of radio inbound packet
 // Structs will be freed after the call. So do not refer to them later
 
-void radio_event_handler_heartbeat(struct radio_prot_heartbeat *prot_heartbeat);
-void radio_event_handler_message(struct radio_prot_msg *prot_msg);
-void radio_event_handler_invite(struct radio_prot_invite *prot_invite);
-void radio_event_handler_join(struct radio_prot_join *prot_join);
+void radio_event_handler_heartbeat(struct radio_prot_heartbeat *heartbeat);
+void radio_event_handler_message(struct radio_prot_msg *msg);
+void radio_event_handler_invite(struct radio_prot_invite *invite);
 
 #endif /* __RADIO_H__ */

@@ -46,6 +46,23 @@ void circular_queue_get(circular_queue_t *q, uint16_t size, void *dst)
   }
 }
 
+void circular_queue_get_off(circular_queue_t *q, uint16_t offset, uint16_t size,
+                            void *dst)
+{
+  assert(offset + size <= circular_queue_size(q) &&
+         "No enough data in the buffer");
+
+  uint16_t src_i = (q->head + offset) % q->len;
+  uint8_t *dst_ptr = dst;
+  while (size > 0) {
+    *dst_ptr++ = q->buffer[src_i++];
+    if (src_i >= q->len) {
+      src_i = 0;
+    }
+    size--;
+  }
+}
+
 void circular_queue_pop(circular_queue_t *q, uint16_t size)
 {
   while (size > 0) {

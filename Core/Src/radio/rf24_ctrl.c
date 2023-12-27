@@ -199,6 +199,7 @@ void radio_enable_rx_irq(bool enable)
 
   NRF24L01_CE = 1;
 
+  // Handle pending interrupts
   if (enable) {
     radio_irq_dispatcher();
   }

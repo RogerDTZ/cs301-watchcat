@@ -8,21 +8,7 @@
 #include "app/chat.h"
 #include "radio/radio.h"
 
-static radio_uid_t get_chatter(int id)
-{
-  radio_uid_t local_uid = get_uid();
-  assert(0 <= local_uid && local_uid < USER_NUM);
-
-  if (local_uid == 0) {
-    return id == 1 ? 1 : 2;
-  } else if (local_uid == 1) {
-    return id == 1 ? 0 : 2;
-  } else {
-    return id == 1 ? 0 : 1;
-  }
-}
-
-static radio_uid_t get_session(radio_uid_t uid)
+radio_session_t get_session_with(radio_uid_t uid)
 {
   radio_uid_t local_uid = get_uid();
   assert(0 <= local_uid && local_uid < USER_NUM);
@@ -37,16 +23,52 @@ static radio_uid_t get_session(radio_uid_t uid)
   }
 }
 
+radio_uid_t get_chatter_from_session(radio_session_t session)
+{
+  assert(session != SESSION_ID_0_1_2 && "Should not pass in group session");
+
+  radio_uid_t local_uid = get_uid();
+  assert(0 <= local_uid && local_uid < USER_NUM);
+
+  if (local_uid == 0) {
+    return session == SESSION_ID_0_1 ? 1 : 2;
+  } else if (local_uid == 1) {
+    return session == SESSION_ID_0_1 ? 0 : 2;
+  } else {
+    return session == SESSION_ID_0_2 ? 0 : 1;
+  }
+}
+
+/**
+ * @brief Return the uid of the chatter in the UI
+ *
+ * @param id 1 or 2, indicating the first or second single-chat
+ */
+static radio_uid_t get_single_chatter_uid(int ui_id)
+{
+  assert((ui_id == 1 || ui_id == 2) && "Invalid ui_id");
+  radio_uid_t local_uid = get_uid();
+  assert(0 <= local_uid && local_uid < USER_NUM);
+
+  if (local_uid == 0) {
+    return ui_id == 1 ? 1 : 2;
+  } else if (local_uid == 1) {
+    return ui_id == 1 ? 0 : 2;
+  } else {
+    return ui_id == 1 ? 0 : 1;
+  }
+}
+
 void ChatChat1Clicked(lv_event_t *e)
 {
-  radio_uid_t chatter = get_chatter(1);
-  action_invite(chatter, get_session(chatter));
+  radio_uid_t chatter = get_single_chatter_uid(1);
+  action_invite(chatter, get_session_with(chatter));
 }
 
 void ChatChat2Clicked(lv_event_t *e)
 {
-  radio_uid_t chatter = get_chatter(2);
-  action_invite(chatter, get_session(chatter));
+  radio_uid_t chatter = get_single_chatter_uid(2);
+  action_invite(chatter, get_session_with(chatter));
 }
 
 void ChatGroupClicked(lv_event_t *e) {}
