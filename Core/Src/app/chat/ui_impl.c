@@ -8,6 +8,35 @@
 #include "app/chat.h"
 #include "radio/radio.h"
 
+static void on_chat_switching()
+{
+  // [TODO] according to ui_curr_session, display content of the chat
+  lv_label_set_text_fmt(ui_Label4, "This is chat %d", (int)ui_curr_session);
+}
+
+static void set_chatter_online_ui(int ui_id, bool online)
+{
+  assert(1 <= ui_id && ui_id <= 2 && "Invalid ui_id");
+
+  if (ui_id == 1) {
+    if (online) {
+      lv_obj_clear_flag(ui_Chatter1Online, LV_OBJ_FLAG_HIDDEN);
+      lv_obj_add_flag(ui_Chatter1Offline, LV_OBJ_FLAG_HIDDEN);
+    } else {
+      lv_obj_clear_flag(ui_Chatter1Offline, LV_OBJ_FLAG_HIDDEN);
+      lv_obj_add_flag(ui_Chatter1Online, LV_OBJ_FLAG_HIDDEN);
+    }
+  } else {
+    if (online) {
+      lv_obj_clear_flag(ui_Chatter2Online, LV_OBJ_FLAG_HIDDEN);
+      lv_obj_add_flag(ui_Chatter2Offline, LV_OBJ_FLAG_HIDDEN);
+    } else {
+      lv_obj_clear_flag(ui_Chatter2Offline, LV_OBJ_FLAG_HIDDEN);
+      lv_obj_add_flag(ui_Chatter2Online, LV_OBJ_FLAG_HIDDEN);
+    }
+  }
+}
+
 radio_session_t get_session_with(radio_uid_t uid)
 {
   radio_uid_t local_uid = get_uid();
@@ -39,12 +68,7 @@ radio_uid_t get_chatter_from_session(radio_session_t session)
   }
 }
 
-/**
- * @brief Return the uid of the chatter in the UI
- *
- * @param id 1 or 2, indicating the first or second single-chat
- */
-static radio_uid_t get_single_chatter_uid(int ui_id)
+radio_uid_t get_single_chatter_uid(int ui_id)
 {
   assert((ui_id == 1 || ui_id == 2) && "Invalid ui_id");
   radio_uid_t local_uid = get_uid();
@@ -61,27 +85,72 @@ static radio_uid_t get_single_chatter_uid(int ui_id)
 
 void event_user_online(radio_uid_t uid)
 {
-  lv_label_set_text_fmt(ui_Label4, "User %d is online", uid);
+  assert(uid != get_uid() && "Should not be called for local user");
+
+  const char *user_name = get_user_name(uid);
+  // Show the cross-app notification
+  lv_label_set_text_fmt(ui_Notification, "%s is online", user_name);
+  // Toggle the online mark
+  if (get_single_chatter_uid(1) == uid) {
+    set_chatter_online_ui(1, true);
+  } else if (get_single_chatter_uid(2) == uid) {
+    set_chatter_online_ui(2, true);
+  }
 }
 
 void event_user_offline(radio_uid_t uid)
 {
-  lv_label_set_text_fmt(ui_Label4, "User %d is offline", uid);
+  assert(uid != get_uid() && "Should not be called for local user");
+
+  const char *user_name = get_user_name(uid);
+  // Show the cross-app notification
+  lv_label_set_text_fmt(ui_Notification, "%s went offline", user_name);
+  // Toggle the online mark
+  if (get_single_chatter_uid(1) == uid) {
+    set_chatter_online_ui(1, false);
+  } else if (get_single_chatter_uid(2) == uid) {
+    set_chatter_online_ui(2, false);
+  }
 }
 
 void ChatChat1Clicked(lv_event_t *e)
 {
   radio_uid_t chatter = get_single_chatter_uid(1);
-  action_message(get_session_with(chatter), "Hello! You are my chat 1");
+
+  // Clear the invitation mark
+  lv_obj_add_flag(ui_Chatter1Invite, LV_OBJ_FLAG_HIDDEN);
+
+  if (ui_curr_session != UI_SESSION_CHAT1) {
+    ui_curr_session = UI_SESSION_CHAT1;
+    on_chat_switching();
+  } else {
+    // re-click issues an invitation
+    action_invite(chatter, get_session_with(chatter));
+  }
 }
 
 void ChatChat2Clicked(lv_event_t *e)
 {
   radio_uid_t chatter = get_single_chatter_uid(2);
-  action_message(get_session_with(chatter), "Hello! You are my chat 2");
+
+  // Clear the invitation mark
+  lv_obj_add_flag(ui_Chatter2Invite, LV_OBJ_FLAG_HIDDEN);
+
+  if (ui_curr_session != UI_SESSION_CHAT2) {
+    ui_curr_session = UI_SESSION_CHAT2;
+    on_chat_switching();
+  } else {
+    // re-click issues an invitation
+    action_invite(chatter, get_session_with(chatter));
+  }
 }
 
 void ChatGroupClicked(lv_event_t *e)
 {
-  action_message(SESSION_ID_0_1_2, "Hello! Speaking in group");
+  // action_message(SESSION_ID_0_1_2, "Hello! Speaking in group");
+
+  if (ui_curr_session != UI_SESSION_GROUP) {
+    ui_curr_session = UI_SESSION_GROUP;
+    on_chat_switching();
+  }
 }

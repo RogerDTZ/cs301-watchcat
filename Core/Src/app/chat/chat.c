@@ -7,6 +7,12 @@
 
 #include "sl_ui/ui.h"
 
+#define USER_NAME_0 "Martha"
+#define USER_NAME_1 "Tina"
+#define USER_NAME_2 "Jackle"
+
+enum ui_session ui_curr_session;
+
 static int heartbeat_countdown;
 static tick_t heartbeat_last_recv[USER_NUM];
 static bool user_online[USER_NUM];
@@ -14,8 +20,23 @@ static int hb_counter[USER_NUM];
 
 static void display_debug()
 {
-  lv_label_set_text_fmt(ui_DebugLabel, "HB: %d %d %d", hb_counter[0],
-                        hb_counter[1], hb_counter[2]);
+  lv_label_set_text_fmt(ui_DebugLabel, "[%s] %d %d %d",
+                        get_user_name(get_uid()), hb_counter[0], hb_counter[1],
+                        hb_counter[2]);
+}
+
+const char *get_user_name(radio_uid_t uid)
+{
+  assert(0 <= uid && uid < USER_NUM);
+
+  switch (uid) {
+  case 0:
+    return USER_NAME_0;
+  case 1:
+    return USER_NAME_1;
+  case 2:
+    return USER_NAME_2;
+  }
 }
 
 void action_heartbeat()
@@ -77,7 +98,27 @@ void radio_event_handler_message(struct radio_prot_msg *msg)
   lv_label_set_text_fmt(ui_Label4, "(%d, %d): %s", session, sender, msg->msg);
 }
 
-void radio_event_handler_invite(struct radio_prot_invite *invite) {}
+void radio_event_handler_invite(struct radio_prot_invite *invite)
+{
+  radio_uid_t inviter = invite->id;
+  radio_session_t session = invite->session;
+
+  assert(session != SESSION_ID_0_1_2 && "Only single chatting can be invited");
+
+  const char *inviter_name = get_user_name(inviter);
+  // Show the cross-app notification
+  lv_label_set_text_fmt(ui_Notification, "%s is inviting you", inviter_name);
+  // Show the invitation mark
+  if (get_single_chatter_uid(1) == inviter) {
+    if (ui_curr_session != UI_SESSION_CHAT1) {
+      lv_obj_clear_flag(ui_Chatter1Invite, LV_OBJ_FLAG_HIDDEN);
+    }
+  } else {
+    if (ui_curr_session != UI_SESSION_CHAT2) {
+      lv_obj_clear_flag(ui_Chatter2Invite, LV_OBJ_FLAG_HIDDEN);
+    }
+  }
+}
 
 void chat_init(radio_uid_t uid)
 {
@@ -86,6 +127,11 @@ void chat_init(radio_uid_t uid)
   heartbeat_countdown = 0;
   memset(heartbeat_last_recv, 0, sizeof(heartbeat_last_recv));
   memset(user_online, 0, sizeof(user_online));
+
+  ui_curr_session = UI_SESSION_NONE;
+
+  lv_label_set_text(ui_Chatter1Name, get_user_name(get_single_chatter_uid(1)));
+  lv_label_set_text(ui_Chatter2Name, get_user_name(get_single_chatter_uid(2)));
 }
 
 void chat_update(tick_t delta)

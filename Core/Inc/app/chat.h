@@ -14,9 +14,27 @@
 // offline
 #define HEARTBEAT_OFFLINE_THRESHOLD (1500)
 
+enum ui_session {
+  UI_SESSION_NONE,
+  UI_SESSION_CHAT1,
+  UI_SESSION_CHAT2,
+  UI_SESSION_GROUP,
+};
+
+extern enum ui_session ui_curr_session;
+
+const char *get_user_name(radio_uid_t uid);
+
 radio_uid_t get_session_with(radio_uid_t uid);
 
 radio_uid_t get_chatter_from_session(radio_session_t session);
+
+/**
+ * @brief Return the uid of the chatter in the UI
+ *
+ * @param id 1 or 2, indicating the first or second single-chat
+ */
+radio_uid_t get_single_chatter_uid(int ui_id);
 
 /**
  * Broadcast heartbeat to everyone.
