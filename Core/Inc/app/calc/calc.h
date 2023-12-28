@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-typedef enum calc_mode { CALC_MODE_COMM = 0u, CALC_MODE_EQUA, CALC_MODE_BIN };
+typedef enum calc_mode { CALC_MODE_COMM = 0u, CALC_MODE_EQUA = 1u, CALC_MODE_BIN = 2u };
 
 void calc_set_mode(enum calc_mode new_mode);
 
