@@ -38,6 +38,7 @@
 #include "lvgl.h"
 #include "sl_ui/ui.h"
 
+#include "app/calc.h"
 #include "app/chat.h"
 #include "port/input_dev.h"
 #include "port/lvgl_ctrl.h"
@@ -200,8 +201,8 @@ int main(void)
   // Enable TIM3: 2 Hz
   HAL_TIM_Base_Start_IT(&htim3);
 
-  // [FIXME] This should be called upon first opening chat app
-  chat_init(0);
+  // [FIXME]
+  open_app_calc();
 
   /* clang-format off */
   /* USER CODE END 2 */

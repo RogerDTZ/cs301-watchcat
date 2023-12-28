@@ -19910,7 +19910,8 @@
                             "InheritedType": 4
                           }
                         ],
-                        "saved_objtypeKey": "TABVIEW"
+                        "saved_objtypeKey": "TABVIEW",
+                        "tree_closed": true
                       }
                     ],
                     "locked": false,
@@ -19979,7 +19980,7 @@
                       {
                         "nid": -750822150,
                         "strtype": "OBJECT/Hidden",
-                        "strval": "False",
+                        "strval": "True",
                         "InheritedType": 2
                       },
                       {
@@ -20179,7 +20180,8 @@
                         "InheritedType": 11
                       }
                     ],
-                    "saved_objtypeKey": "CONTAINER"
+                    "saved_objtypeKey": "CONTAINER",
+                    "tree_closed": true
                   }
                 ],
                 "locked": false,
@@ -21666,7 +21668,7 @@
     "theme_color2": 0,
     "uiExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
     "projectExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
-    "backup_cnt": 311,
+    "backup_cnt": 312,
     "autosave_cnt": 0,
     "lvgl_version": "8.3.3",
     "callfuncsexport": "C_FILE",

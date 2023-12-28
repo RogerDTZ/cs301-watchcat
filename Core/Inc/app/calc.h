@@ -5,4 +5,8 @@
 
 void calc_set_fml(const char *fml_str);
 
+void open_app_calc();
+
+void close_app_calc();
+
 #endif /* __CALC_APP_H__ */
