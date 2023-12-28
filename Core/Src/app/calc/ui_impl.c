@@ -1,4 +1,5 @@
-#include "math.h"
+#include <math.h>
+#include <stdlib.h>
 
 #include "lvgl.h"
 #include "sl_ui/ui.h"
@@ -14,6 +15,7 @@ static int ptr = 0;
 void calc_set_fml(const char *fml_str)
 {
   lv_label_set_text(ui_CalcFml, fml_str);
+  lv_obj_set_align(ui_CalcFml, LV_ALIGN_LEFT_MID);
 }
 
 /*=============================================================================
@@ -32,68 +34,73 @@ void CalcModeChanged(lv_event_t *e)
   }
   calc_set_fml(content);
   lv_obj_t *tabview = lv_event_get_target(e);
-  uint16_t tab_index = lv_tabview_get_tab_act(tabview);
+  // uint16_t tab_index = lv_tabview_get_tab_act(tabview);
 
   // 0: Common
   // 1: Equation
   // 2: Binary
-  mode = (mode+1) % 3;
-//  calc_set_mode((enum calc_mode)mode);
-  if (mode == 0){
-	  lv_tabview_rename_tab(tabview, 0, "Common Mode");
-	  lv_label_set_text(ui_CalcCommonButtonLabel16, "(");
-	  lv_obj_clear_flag(ui_CalcCommonButtonRB, LV_OBJ_FLAG_HIDDEN);
+  mode = (mode + 1) % 3;
+  //  calc_set_mode((enum calc_mode)mode);
+  if (mode == 0) {
+    lv_tabview_rename_tab(tabview, 0, "Common Mode");
+    lv_label_set_text(ui_CalcCommonButtonLabel16, "(");
+    lv_obj_clear_flag(ui_CalcCommonButtonLB, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButtonRB, LV_OBJ_FLAG_HIDDEN);
 
-	  lv_obj_clear_flag(ui_CalcCommonButton2, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton3, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton4, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton5, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton6, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton7, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton8, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton9, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButtonDiv, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButtonBs, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButtonClear, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButtonPow, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton2, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton3, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton4, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton5, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton6, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton7, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton8, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton9, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButtonDiv, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButtonBs, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButtonClear, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButtonPow, LV_OBJ_FLAG_HIDDEN);
 
-  }else if (mode == 1){
-	  lv_tabview_rename_tab(tabview, 0, "Equation Mode");
-	  lv_obj_add_flag(ui_CalcCommonButtonRB, LV_OBJ_FLAG_HIDDEN);
-	  lv_label_set_text(ui_CalcCommonButtonLabel16, "x");
+  } else if (mode == 1) {
+    lv_tabview_rename_tab(tabview, 0, "Equation Mode");
+    lv_obj_clear_flag(ui_CalcCommonButtonLB, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButtonRB, LV_OBJ_FLAG_HIDDEN);
+    lv_label_set_text(ui_CalcCommonButtonLabel16, "x");
 
-	  lv_obj_clear_flag(ui_CalcCommonButton2, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton3, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton4, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton5, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton6, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton7, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton8, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButton9, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButtonDiv, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButtonBs, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButtonClear, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_clear_flag(ui_CalcCommonButtonPow, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton2, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton3, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton4, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton5, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton6, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton7, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton8, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButton9, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButtonDiv, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButtonBs, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButtonClear, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_CalcCommonButtonPow, LV_OBJ_FLAG_HIDDEN);
 
-  }else{
-	  lv_tabview_rename_tab(tabview, 0, "Binary Mode");
-	  lv_obj_add_flag(ui_CalcCommonButton2, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButton3, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButton4, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButton5, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButton6, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButton7, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButton8, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButton9, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButtonDiv, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButtonBs, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButtonClear, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButtonPow, LV_OBJ_FLAG_HIDDEN);
-	  lv_obj_add_flag(ui_CalcCommonButtonLB, LV_OBJ_FLAG_HIDDEN);
+  } else {
+    lv_tabview_rename_tab(tabview, 0, "Binary Mode");
+    lv_obj_add_flag(ui_CalcCommonButton2, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButton3, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButton4, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButton5, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButton6, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButton7, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButton8, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButton9, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButtonDiv, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButtonBs, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButtonClear, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButtonPow, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_CalcCommonButtonLB, LV_OBJ_FLAG_HIDDEN);
   }
   char str[20];
   // 使用 sprintf 将整数转换为字符串
-  sprintf(str, "Mode: %d", mode);
+  sprintf(str, "Mode: %s",
+          mode == 0   ? "Common"
+          : mode == 1 ? "Equation"
+                      : "Binary");
   calc_set_fml(str);
 }
 
@@ -306,43 +313,50 @@ double calculateExpression(const char *expression, int bin)
   // 返回最终结果
   return operandStack[0];
 }
+
+void Equation(lv_event_t *e);
+void BinaryEqual(lv_event_t *e);
+
 void CalcCommClickedEqual(lv_event_t *e)
 {
-	if (mode == 1){
-		Equation(e);
-	}else if (mode == 2){
-		BinaryEqual(e);
-	}else{
-		double result = calculateExpression(content, 0);
-		while (ptr != 0) {
-			ptr--;
-			content[ptr] = 0;
-		}
-		char result_show[50]; // Adjust the size based on your needs
-		sprintf(result_show, "%g", result);
-		calc_set_fml(result_show);
-	}
+  if (mode == 1) {
+    Equation(e);
+  } else if (mode == 2) {
+    BinaryEqual(e);
+  } else {
+    double result = calculateExpression(content, 0);
+    while (ptr != 0) {
+      ptr--;
+      content[ptr] = 0;
+    }
+    char result_show[50]; // Adjust the size based on your needs
+    sprintf(result_show, "%g", result);
+    calc_set_fml(result_show);
+  }
 }
+
+void CalcEqualConfirm(lv_event_t *e);
+
 void CalcCommClickedClear(lv_event_t *e)
 {
-	if (mode == 1){
-		CalcEqualConfirm(e);
-	}else {
-		while (ptr != 0) {
-			ptr--;
-			content[ptr] = 0;
-		}
-		calc_set_fml(content);
-	}
+  if (mode == 1) {
+    CalcEqualConfirm(e);
+  } else {
+    while (ptr != 0) {
+      ptr--;
+      content[ptr] = 0;
+    }
+    calc_set_fml(content);
+  }
 }
 
 void CalcCommClickedLB(lv_event_t *e)
 {
-	if (mode == 0){
-		content[ptr++] = '(';
-	}else if (mode == 1){
-		content[ptr++] = 'x';
-	}
+  if (mode == 0) {
+    content[ptr++] = '(';
+  } else if (mode == 1) {
+    content[ptr++] = 'x';
+  }
 
   calc_set_fml(content);
 }
@@ -535,10 +549,9 @@ char *intToBinaryString(int num)
     i = num % 2; // 余数i=1	//i=1		//i=1			//i=1
     result =
         k * i +
-        result; // result=1	//result=11	//result=111	//result=1111
-    k = k * 10; // k=10		//k=100		//k=1000
-    num =
-        num / 2; // n=7		//n=3		//n=1 //n=0退出
+        result;    // result=1	//result=11	//result=111	//result=1111
+    k = k * 10;    // k=10		//k=100		//k=1000
+    num = num / 2; // n=7		//n=3		//n=1 //n=0退出
   }
   sprintf(binaryStr, "%d", result); // 1111
 

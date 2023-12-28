@@ -85,7 +85,6 @@
                               },
                               {
                                 "nid": 1102516543,
-                                "flags": 1048576,
                                 "strtype": "OBJECT/Flags",
                                 "InheritedType": 1
                               },
@@ -176,7 +175,7 @@
                               {
                                 "nid": -69761187,
                                 "strtype": "OBJECT/Scroll_elastic",
-                                "strval": "True",
+                                "strval": "False",
                                 "InheritedType": 2
                               },
                               {
@@ -283,13 +282,13 @@
                               {
                                 "nid": -1690700856,
                                 "strtype": "LABEL/Long_mode",
-                                "strval": "CLIP",
+                                "strval": "SCROLL_CIRCULAR",
                                 "InheritedType": 3
                               },
                               {
                                 "nid": 1264321404,
                                 "strtype": "LABEL/Text",
-                                "strval": "(3*5)+(18/6)+2^5-10*19",
+                                "strval": "",
                                 "InheritedType": 10
                               },
                               {
@@ -11800,8 +11799,7 @@
                                     "InheritedType": 4
                                   }
                                 ],
-                                "saved_objtypeKey": "BUTTON",
-                                "tree_closed": true
+                                "saved_objtypeKey": "BUTTON"
                               },
                               {
                                 "guid": "GUID97642086-471830S7692354",
@@ -13765,7 +13763,8 @@
                                     "InheritedType": 4
                                   }
                                 ],
-                                "saved_objtypeKey": "BUTTON"
+                                "saved_objtypeKey": "BUTTON",
+                                "tree_closed": true
                               }
                             ],
                             "locked": false,
@@ -13987,14 +13986,13 @@
                               },
                               {
                                 "nid": -1608124604,
-                                "flags": 1048576,
                                 "strtype": "TABPAGE/TabPage",
                                 "InheritedType": 1
                               },
                               {
                                 "nid": 1274482072,
                                 "strtype": "TABPAGE/Title",
-                                "strval": "Comm.",
+                                "strval": "Common Mode",
                                 "InheritedType": 10
                               },
                               {
@@ -14014,8 +14012,7 @@
                                 "InheritedType": 11
                               }
                             ],
-                            "saved_objtypeKey": "TABPAGE",
-                            "tree_closed": true
+                            "saved_objtypeKey": "TABPAGE"
                           }
                         ],
                         "locked": false,
@@ -15597,9 +15594,9 @@
     "theme_dark": false,
     "theme_color1": 5,
     "theme_color2": 0,
-    "uiExportFolderPath": "/Users/lipeiru/Embedded_Systems/cs301-watchcat/SquareLine/export",
-    "projectExportFolderPath": "/Users/lipeiru/Embedded_Systems/cs301-watchcat/SquareLine/export",
-    "backup_cnt": 220,
+    "uiExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
+    "projectExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
+    "backup_cnt": 223,
     "autosave_cnt": 0,
     "lvgl_version": "8.3.3",
     "callfuncsexport": "C_FILE",
