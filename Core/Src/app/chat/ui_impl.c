@@ -113,6 +113,10 @@ void event_user_offline(radio_uid_t uid)
   }
 }
 
+void ChatSelectedId0(lv_event_t *e) { event_selected_id(0); }
+void ChatSelectedId1(lv_event_t *e) { event_selected_id(1); }
+void ChatSelectedId2(lv_event_t *e) { event_selected_id(2); }
+
 void ChatChat1Clicked(lv_event_t *e)
 {
   radio_uid_t chatter = get_single_chatter_uid(1);

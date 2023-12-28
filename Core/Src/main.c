@@ -200,8 +200,8 @@ int main(void)
   // Enable TIM3: 2 Hz
   HAL_TIM_Base_Start_IT(&htim3);
 
-  // [FIXME] This should be called upon first opening chat app
-  chat_init(0);
+  // [FIXME] open the app when clicking it on home page
+  open_app_chat();
 
   /* clang-format off */
   /* USER CODE END 2 */
