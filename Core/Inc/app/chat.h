@@ -64,14 +64,15 @@ void event_user_online(radio_uid_t uid);
 void event_user_offline(radio_uid_t uid);
 
 /**
- * Init chat app with the specified identity.
- */
-void chat_init(radio_uid_t uid);
-
-/**
  * Check the activity of the last period. Issue heartbeat if necessary.
  * Poll on radio inbound.
  */
 void chat_update(tick_t delta);
+
+void open_app_chat();
+
+void close_app_chat();
+
+void event_selected_id(int id);
 
 #endif /* __CHAT_H__ */

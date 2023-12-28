@@ -7,9 +7,9 @@
 
 #include "sl_ui/ui.h"
 
-#define USER_NAME_0 "Martha"
-#define USER_NAME_1 "Tina"
-#define USER_NAME_2 "Jackle"
+#define USER_NAME_0 "Apple"
+#define USER_NAME_1 "Banana"
+#define USER_NAME_2 "Carrot"
 
 enum ui_session ui_curr_session;
 
@@ -18,11 +18,28 @@ static tick_t heartbeat_last_recv[USER_NUM];
 static bool user_online[USER_NUM];
 static int hb_counter[USER_NUM];
 
-static void display_debug()
+static void display_chat_bg()
 {
-  lv_label_set_text_fmt(ui_DebugLabel, "[%s] %d %d %d",
+  lv_label_set_text_fmt(ui_ChatBgInfo, "[%s] %d %d %d",
                         get_user_name(get_uid()), hb_counter[0], hb_counter[1],
                         hb_counter[2]);
+}
+
+/**
+ * Init chat app with the specified identity.
+ */
+static void chat_init(radio_uid_t uid)
+{
+  radio_init(uid);
+
+  heartbeat_countdown = 0;
+  memset(heartbeat_last_recv, 0, sizeof(heartbeat_last_recv));
+  memset(user_online, 0, sizeof(user_online));
+
+  ui_curr_session = UI_SESSION_NONE;
+
+  lv_label_set_text(ui_Chatter1Name, get_user_name(get_single_chatter_uid(1)));
+  lv_label_set_text(ui_Chatter2Name, get_user_name(get_single_chatter_uid(2)));
 }
 
 const char *get_user_name(radio_uid_t uid)
@@ -82,7 +99,7 @@ void radio_event_handler_heartbeat(struct radio_prot_heartbeat *heartbeat)
   radio_uid_t sender = heartbeat->id;
 
   hb_counter[sender] += 1;
-  display_debug();
+  display_chat_bg();
 
   heartbeat_last_recv[sender] = get_50hz_tick();
   if (!user_online[sender]) {
@@ -121,20 +138,6 @@ void radio_event_handler_invite(struct radio_prot_invite *invite)
   }
 }
 
-void chat_init(radio_uid_t uid)
-{
-  radio_init(uid);
-
-  heartbeat_countdown = 0;
-  memset(heartbeat_last_recv, 0, sizeof(heartbeat_last_recv));
-  memset(user_online, 0, sizeof(user_online));
-
-  ui_curr_session = UI_SESSION_NONE;
-
-  lv_label_set_text(ui_Chatter1Name, get_user_name(get_single_chatter_uid(1)));
-  lv_label_set_text(ui_Chatter2Name, get_user_name(get_single_chatter_uid(2)));
-}
-
 void chat_update(tick_t delta)
 {
   if (get_uid() == 0xFF) {
@@ -151,7 +154,7 @@ void chat_update(tick_t delta)
     heartbeat_countdown = HEARTBEAT_INTERVAL;
     action_heartbeat();
     hb_counter[get_uid()] += 1;
-    display_debug();
+    display_chat_bg();
   }
 
   // Check heartbeat timeout
@@ -166,3 +169,40 @@ void chat_update(tick_t delta)
     }
   }
 }
+
+static void show_id_selection_interface()
+{
+  lv_obj_clear_flag(ui_ChatIDSelection, LV_OBJ_FLAG_HIDDEN);
+  lv_obj_add_flag(ui_ChattersPanel, LV_OBJ_FLAG_HIDDEN);
+  lv_obj_add_flag(ui_ChatsPanel, LV_OBJ_FLAG_HIDDEN);
+}
+
+static void show_chat_interface()
+{
+  lv_obj_add_flag(ui_ChatIDSelection, LV_OBJ_FLAG_HIDDEN);
+  lv_obj_clear_flag(ui_ChattersPanel, LV_OBJ_FLAG_HIDDEN);
+  lv_obj_clear_flag(ui_ChatsPanel, LV_OBJ_FLAG_HIDDEN);
+}
+
+void event_selected_id(int id)
+{
+  assert(0 <= id && id < USER_NUM && "Invalid id");
+
+  chat_init(id);
+
+  show_chat_interface();
+}
+
+void open_app_chat()
+{
+  lv_obj_clear_flag(ui_ChatApp, LV_OBJ_FLAG_HIDDEN);
+
+  if (get_uid() == 0xFF) {
+    // Not initialized yet
+    show_id_selection_interface();
+  } else {
+    show_chat_interface();
+  }
+}
+
+void close_app_chat() { lv_obj_add_flag(ui_ChatApp, LV_OBJ_FLAG_HIDDEN); }

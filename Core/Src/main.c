@@ -201,8 +201,8 @@ int main(void)
   // Enable TIM3: 2 Hz
   HAL_TIM_Base_Start_IT(&htim3);
 
-  // [FIXME]
-  open_app_calc();
+  // open_app_calc();
+  // open_app_chat();
 
   /* clang-format off */
   /* USER CODE END 2 */
