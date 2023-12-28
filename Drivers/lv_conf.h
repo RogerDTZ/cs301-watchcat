@@ -483,7 +483,7 @@
 
 #define LV_USE_CHECKBOX   0
 
-#define LV_USE_DROPDOWN   1   /*Requires: lv_label*/
+#define LV_USE_DROPDOWN   0   /*Requires: lv_label*/
 
 #define LV_USE_IMG        1   /*Requires: lv_label*/
 

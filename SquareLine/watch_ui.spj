@@ -24049,7 +24049,8 @@
                                     "InheritedType": 4
                                   }
                                 ],
-                                "saved_objtypeKey": "BUTTON"
+                                "saved_objtypeKey": "BUTTON",
+                                "tree_closed": true
                               },
                               {
                                 "guid": "GUID17711799-913058S1462359",
@@ -29957,8 +29958,7 @@
                                     "InheritedType": 4
                                   }
                                 ],
-                                "saved_objtypeKey": "BUTTON",
-                                "tree_closed": true
+                                "saved_objtypeKey": "BUTTON"
                               },
                               {
                                 "guid": "GUID93679759-922994S1692359",
