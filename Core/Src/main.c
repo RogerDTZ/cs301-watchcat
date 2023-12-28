@@ -85,6 +85,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/* clang-format on */
 
 void update_2hz(uint32_t delta)
 {
@@ -102,15 +103,9 @@ void update_50hz(uint32_t delta)
   lv_tick_inc(delta);
 }
 
-uint32_t get_2hz_tick()
-{
-  return tick_2hz;
-}
+uint32_t get_2hz_tick() { return tick_2hz; }
 
-uint32_t get_50hz_tick()
-{
-  return tick_50hz;
-}
+uint32_t get_50hz_tick() { return tick_50hz; }
 
 void touch_indev_read_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
 {
@@ -119,6 +114,9 @@ void touch_indev_read_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
   data->state = probed_touch_pressed ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
 }
 
+static void custom_ui_init() {}
+
+/* clang-format off */
 /* USER CODE END 0 */
 
 /**
@@ -195,6 +193,7 @@ int main(void)
   init_lvgl_input_devices();
   // Init SquareLine ui
   ui_init();
+  custom_ui_init();
 
   // Enable TIM2: 50 Hz
   HAL_TIM_Base_Start_IT(&htim2);
@@ -204,7 +203,7 @@ int main(void)
 
   // open_app_calc();
   // open_app_chat();
-  open_app_album();
+  // open_app_album();
 
   /* clang-format off */
   /* USER CODE END 2 */
