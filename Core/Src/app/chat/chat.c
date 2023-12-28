@@ -37,6 +37,7 @@ const char *get_user_name(radio_uid_t uid)
   case 2:
     return USER_NAME_2;
   }
+  return NULL;
 }
 
 void action_heartbeat()
