@@ -38,6 +38,7 @@
 #include "lvgl.h"
 #include "sl_ui/ui.h"
 
+#include "app/album.h"
 #include "app/calc.h"
 #include "app/chat.h"
 #include "port/input_dev.h"
@@ -203,6 +204,7 @@ int main(void)
 
   // open_app_calc();
   // open_app_chat();
+  open_app_album();
 
   /* clang-format off */
   /* USER CODE END 2 */
