@@ -22466,7 +22466,8 @@
                             "InheritedType": 4
                           }
                         ],
-                        "saved_objtypeKey": "TABVIEW"
+                        "saved_objtypeKey": "TABVIEW",
+                        "tree_closed": true
                       }
                     ],
                     "locked": false,
