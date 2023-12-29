@@ -22793,8 +22793,8 @@
                             "flags": 17,
                             "strtype": "OBJECT/Size",
                             "intarray": [
-                              140,
-                              140
+                              110,
+                              110
                             ],
                             "InheritedType": 7
                           },
@@ -23086,7 +23086,7 @@
                             "flags": 17,
                             "strtype": "OBJECT/Position",
                             "intarray": [
-                              0,
+                              1,
                               -20
                             ],
                             "InheritedType": 7
@@ -23096,8 +23096,8 @@
                             "flags": 17,
                             "strtype": "OBJECT/Size",
                             "intarray": [
-                              64,
-                              64
+                              32,
+                              32
                             ],
                             "InheritedType": 7
                           },
@@ -23327,7 +23327,7 @@
                           {
                             "nid": 1838827858,
                             "strtype": "IMAGE/Scale",
-                            "integer": 512,
+                            "integer": 768,
                             "InheritedType": 6
                           },
                           {
@@ -23638,7 +23638,7 @@
                           {
                             "nid": -1958970662,
                             "strtype": "OBJECT/Name",
-                            "strval": "AlbumButtonNext",
+                            "strval": "AlbumButtonPrev",
                             "InheritedType": 10
                           },
                           {
@@ -23960,7 +23960,7 @@
                                   {
                                     "nid": 794071967,
                                     "strtype": "CALL FUNCTION/Function_name",
-                                    "strval": "AlbumButtonNextClicked",
+                                    "strval": "AlbumButtonPrevClicked",
                                     "InheritedType": 10
                                   },
                                   {
@@ -24275,7 +24275,7 @@
                           {
                             "nid": -209414227,
                             "strtype": "OBJECT/Name",
-                            "strval": "AlbumButtonPrev",
+                            "strval": "AlbumButtonNext",
                             "InheritedType": 10
                           },
                           {
@@ -24577,7 +24577,7 @@
                                   {
                                     "nid": -2004392792,
                                     "strtype": "CALL FUNCTION/Function_name",
-                                    "strval": "AlbumButtonPrevClicked",
+                                    "strval": "AlbumButtonNextClicked",
                                     "InheritedType": 10
                                   },
                                   {
@@ -27781,7 +27781,8 @@
                         "InheritedType": 11
                       }
                     ],
-                    "saved_objtypeKey": "CONTAINER"
+                    "saved_objtypeKey": "CONTAINER",
+                    "tree_closed": true
                   }
                 ],
                 "locked": false,
@@ -29040,7 +29041,7 @@
                   {
                     "disabled": false,
                     "nid": -1201029062,
-                    "strtype": "BUTTON/EventHandler",
+                    "strtype": "_event/EventHandler",
                     "strval": "CLICKED",
                     "childs": [
                       {
@@ -29063,7 +29064,7 @@
                       },
                       {
                         "nid": -1715988565,
-                        "strtype": "_custom/action",
+                        "strtype": "_event/action",
                         "strval": "CALL FUNCTION",
                         "childs": [
                           {
@@ -29681,7 +29682,7 @@
     "theme_color2": 0,
     "uiExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
     "projectExportFolderPath": "D:\\SUSTech\\2023-Fall\\CS301-EmbeddedSystem\\cs301-watchcat\\SquareLine\\export",
-    "backup_cnt": 336,
+    "backup_cnt": 349,
     "autosave_cnt": 0,
     "lvgl_version": "8.3.3",
     "callfuncsexport": "C_FILE",
