@@ -1,6 +1,7 @@
 #include "app/chat.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "main.h"
@@ -11,12 +12,36 @@
 #define USER_NAME_1 "Banana"
 #define USER_NAME_2 "Carrot"
 
+struct emoji {
+  lv_obj_t *img;
+};
+
+LV_IMG_DECLARE(emoji_grin);
+LV_IMG_DECLARE(emoji_rage);
+LV_IMG_DECLARE(emoji_roll);
+
 enum ui_session ui_curr_session;
 
 static int heartbeat_countdown;
 static tick_t heartbeat_last_recv[USER_NUM];
 static bool user_online[USER_NUM];
 static int hb_counter[USER_NUM];
+
+static struct emoji *create_emoji(lv_obj_t *parent, lv_coord_t x, lv_coord_t y,
+                                  const lv_img_dsc_t *img)
+{
+  struct emoji *emoji = malloc(sizeof(struct emoji));
+  emoji->img = lv_img_create(parent);
+  lv_img_set_src(emoji->img, img);
+  lv_obj_set_pos(emoji->img, x, y);
+  return emoji;
+}
+
+static void free_emoji(struct emoji *emoji)
+{
+  lv_obj_del(emoji->img);
+  free(emoji);
+}
 
 static void display_chat_bg()
 {
@@ -98,7 +123,7 @@ void radio_event_handler_heartbeat(struct radio_prot_heartbeat *heartbeat)
 {
   radio_uid_t sender = heartbeat->id;
 
-  hb_counter[sender] += 1;
+  hb_counter[sender] = (hb_counter[sender] + 1) % 10;
   display_chat_bg();
 
   heartbeat_last_recv[sender] = get_50hz_tick();
@@ -153,7 +178,7 @@ void chat_update(tick_t delta)
   if (heartbeat_countdown <= 0) {
     heartbeat_countdown = HEARTBEAT_INTERVAL;
     action_heartbeat();
-    hb_counter[get_uid()] += 1;
+    hb_counter[get_uid()] = (hb_counter[get_uid()] + 1) % 10;
     display_chat_bg();
   }
 
