@@ -1,6 +1,8 @@
 #ifndef __CHAT_H__
 #define __CHAT_H__
 
+#include "lvgl.h"
+
 #include "radio/radio.h"
 
 #define SESSION_ID_0_1   (0)
@@ -14,6 +16,8 @@
 // offline
 #define HEARTBEAT_OFFLINE_THRESHOLD (1500)
 
+#define MAX_MESSAGE_BUFFER_LENGTH (20)
+
 enum ui_session {
   UI_SESSION_NONE,
   UI_SESSION_CHAT1,
@@ -22,6 +26,21 @@ enum ui_session {
 };
 
 extern enum ui_session ui_curr_session;
+
+extern int message_length;
+extern uint8_t send_buffer[MSG_MAX_LEN];
+
+extern struct radio_prot_msg chatter1_message_buffer[MAX_MESSAGE_BUFFER_LENGTH];
+
+extern struct radio_prot_msg chatter2_message_buffer[MAX_MESSAGE_BUFFER_LENGTH];
+
+extern struct radio_prot_msg group_message_buffer[MAX_MESSAGE_BUFFER_LENGTH];
+
+extern int chatter1_message_buffer_pointer;
+
+extern int chatter2_message_buffer_pointer;
+
+extern int group_message_buffer_pointer;
 
 const char *get_user_name(radio_uid_t uid);
 
@@ -74,5 +93,12 @@ void open_app_chat();
 void close_app_chat();
 
 void event_selected_id(int id);
+
+void update_current_message();
+
+bool is_user_online(radio_uid_t uid);
+
+void print_message(lv_obj_t *texts[], struct radio_prot_msg buffer[],
+                   int buffer_pointer);
 
 #endif /* __CHAT_H__ */

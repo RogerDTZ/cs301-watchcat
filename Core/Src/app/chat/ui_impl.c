@@ -14,6 +14,20 @@ static void on_chat_switching()
   lv_label_set_text_fmt(ui_ChatDesc, "This is chat %d", (int)ui_curr_session);
 }
 
+static radio_session_t get_session_from_curr_ui()
+{
+  switch (ui_curr_session) {
+  case UI_SESSION_CHAT1:
+    return get_session_with(get_single_chatter_uid(1));
+  case UI_SESSION_CHAT2:
+    return get_session_with(get_single_chatter_uid(2));
+  case UI_SESSION_GROUP:
+    return SESSION_ID_0_1_2;
+  default:
+    assert(0 && "Invalid ui");
+  }
+}
+
 static void set_chatter_online_ui(int ui_id, bool online)
 {
   assert(1 <= ui_id && ui_id <= 2 && "Invalid ui_id");
@@ -131,6 +145,8 @@ void ChatChat1Clicked(lv_event_t *e)
     // re-click issues an invitation
     action_invite(chatter, get_session_with(chatter));
   }
+
+  update_current_message();
 }
 
 void ChatChat2Clicked(lv_event_t *e)
@@ -147,6 +163,8 @@ void ChatChat2Clicked(lv_event_t *e)
     // re-click issues an invitation
     action_invite(chatter, get_session_with(chatter));
   }
+
+  update_current_message();
 }
 
 void ChatGroupClicked(lv_event_t *e)
@@ -157,4 +175,44 @@ void ChatGroupClicked(lv_event_t *e)
     ui_curr_session = UI_SESSION_GROUP;
     on_chat_switching();
   }
+
+  update_current_message();
+}
+
+void SendClicked(lv_event_t *e)
+{
+  if (ui_curr_session == UI_SESSION_NONE) {
+    lv_label_set_text_fmt(ui_Notification, "Please select a chat");
+    return;
+  }
+
+  if (ui_curr_session != UI_SESSION_GROUP) {
+    radio_uid_t target_user =
+        get_chatter_from_session(get_session_from_curr_ui());
+    if (!is_user_online(target_user)) {
+      lv_label_set_text_fmt(ui_Notification, "Fail, %s is not online",
+                            get_user_name(target_user));
+      return;
+    }
+  }
+
+  struct radio_prot_packet pkt;
+  pkt.cmd = RADIO_PROT_CMD_MSG;
+  pkt.body.msg.id = get_uid();
+  pkt.body.msg.session = get_session_from_curr_ui();
+  memcpy(pkt.body.msg.msg, send_buffer, message_length);
+  pkt.body.msg.msg[message_length] = '\0';
+  message_length = 0;
+
+  if (ui_curr_session == UI_SESSION_CHAT1) {
+    chatter1_message_buffer[chatter1_message_buffer_pointer++] = pkt.body.msg;
+  } else if (ui_curr_session == UI_SESSION_CHAT2) {
+    chatter2_message_buffer[chatter2_message_buffer_pointer++] = pkt.body.msg;
+  } else {
+    group_message_buffer[group_message_buffer_pointer++] = pkt.body.msg;
+  }
+
+  action_message(pkt.body.msg.session, pkt.body.msg.msg);
+
+  update_current_message();
 }

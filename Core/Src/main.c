@@ -21,6 +21,7 @@
 #include "main.h"
 #include "spi.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -74,6 +75,8 @@ static uint32_t tick_50hz;
 static uint16_t probed_touch_point_x;
 static uint16_t probed_touch_point_y;
 static bool probed_touch_pressed;
+
+extern uint8_t rx_buffer[2];
 
 /* USER CODE END PV */
 
@@ -157,6 +160,7 @@ int main(void)
   MX_TIM2_Init();
   MX_SPI1_Init();
   MX_TIM3_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   /* clang-format on */
 
@@ -200,6 +204,9 @@ int main(void)
 
   // Enable TIM3: 2 Hz
   HAL_TIM_Base_Start_IT(&htim3);
+
+  // Initialize HAL Transmit
+  HAL_UART_Receive_IT(&huart1, (uint8_t *)rx_buffer, 1);
 
   // open_app_calc();
   // open_app_chat();

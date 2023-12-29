@@ -12,10 +12,6 @@
 #define USER_NAME_1 "Banana"
 #define USER_NAME_2 "Carrot"
 
-struct emoji {
-  lv_obj_t *img;
-};
-
 LV_IMG_DECLARE(emoji_grin);
 LV_IMG_DECLARE(emoji_rage);
 LV_IMG_DECLARE(emoji_roll);
@@ -27,21 +23,32 @@ static tick_t heartbeat_last_recv[USER_NUM];
 static bool user_online[USER_NUM];
 static int hb_counter[USER_NUM];
 
-static struct emoji *create_emoji(lv_obj_t *parent, lv_coord_t x, lv_coord_t y,
-                                  const lv_img_dsc_t *img)
+struct radio_prot_msg chatter1_message_buffer[MAX_MESSAGE_BUFFER_LENGTH];
+struct radio_prot_msg chatter2_message_buffer[MAX_MESSAGE_BUFFER_LENGTH];
+struct radio_prot_msg group_message_buffer[MAX_MESSAGE_BUFFER_LENGTH];
+lv_obj_t *chatter1_message_text[MAX_MESSAGE_BUFFER_LENGTH];
+lv_obj_t *chatter2_message_text[MAX_MESSAGE_BUFFER_LENGTH];
+lv_obj_t *group_message_text[MAX_MESSAGE_BUFFER_LENGTH];
+
+int chatter1_message_buffer_pointer;
+int chatter2_message_buffer_pointer;
+int group_message_buffer_pointer;
+
+int message_length;
+uint8_t send_buffer[MSG_MAX_LEN];
+
+static lv_obj_t *create_emoji(lv_obj_t *parent, lv_coord_t x, lv_coord_t y,
+                              const lv_img_dsc_t *img)
 {
-  struct emoji *emoji = malloc(sizeof(struct emoji));
-  emoji->img = lv_img_create(parent);
-  lv_img_set_src(emoji->img, img);
-  lv_obj_set_pos(emoji->img, x, y);
-  return emoji;
+  lv_obj_t *obj;
+  obj = lv_img_create(parent);
+  lv_img_set_src(obj, img);
+  lv_obj_set_pos(obj, x, y);
+  lv_obj_set_align(obj, LV_ALIGN_CENTER);
+  return obj;
 }
 
-static void free_emoji(struct emoji *emoji)
-{
-  lv_obj_del(emoji->img);
-  free(emoji);
-}
+static void free_emoji(lv_obj_t *emoji) { lv_obj_del(emoji); }
 
 static void display_chat_bg()
 {
@@ -138,7 +145,18 @@ void radio_event_handler_message(struct radio_prot_msg *msg)
   radio_uid_t sender = msg->id;
   radio_session_t session = msg->session;
 
-  lv_label_set_text_fmt(ui_ChatDesc, "(%d, %d): %s", session, sender, msg->msg);
+  // lv_label_set_text_fmt(ui_ChatDesc, "(%d, %d): %s", session, sender,
+  // msg->msg);
+
+  if (session == SESSION_ID_0_1_2) {
+    group_message_buffer[group_message_buffer_pointer++] = *msg;
+  } else if (sender == get_single_chatter_uid(1)) {
+    chatter1_message_buffer[chatter1_message_buffer_pointer++] = *msg;
+  } else {
+    chatter2_message_buffer[chatter2_message_buffer_pointer++] = *msg;
+  }
+
+  update_current_message();
 }
 
 void radio_event_handler_invite(struct radio_prot_invite *invite)
@@ -231,3 +249,106 @@ void open_app_chat()
 }
 
 void close_app_chat() { lv_obj_add_flag(ui_ChatApp, LV_OBJ_FLAG_HIDDEN); }
+
+void update_current_message()
+{
+  if (ui_curr_session == UI_SESSION_CHAT1) {
+    print_message(chatter1_message_text, chatter1_message_buffer,
+                  chatter1_message_buffer_pointer);
+  } else if (ui_curr_session == UI_SESSION_CHAT2) {
+    print_message(chatter2_message_text, chatter2_message_buffer,
+                  chatter2_message_buffer_pointer);
+  } else if (ui_curr_session == UI_SESSION_GROUP) {
+    print_message(group_message_text, group_message_buffer,
+                  group_message_buffer_pointer);
+  }
+  if (ui_curr_session != UI_SESSION_CHAT1) {
+    for (int i = 0; i < chatter1_message_buffer_pointer; i++) {
+      if (chatter1_message_text[i]) {
+        lv_obj_add_flag(chatter1_message_text[i], LV_OBJ_FLAG_HIDDEN);
+      }
+    }
+  }
+  if (ui_curr_session != UI_SESSION_CHAT2) {
+    for (int i = 0; i < chatter2_message_buffer_pointer; i++) {
+      if (chatter2_message_text[i]) {
+        lv_obj_add_flag(chatter2_message_text[i], LV_OBJ_FLAG_HIDDEN);
+      }
+    }
+  }
+  if (ui_curr_session != UI_SESSION_GROUP) {
+    for (int i = 0; i < group_message_buffer_pointer; i++) {
+      if (group_message_text[i]) {
+        lv_obj_add_flag(group_message_text[i], LV_OBJ_FLAG_HIDDEN);
+      }
+    }
+  }
+}
+
+static int is_emo_prefix(const char *str)
+{
+  if (strlen(str) < 5) {
+    return 0;
+  }
+  if (str[0] != 'e') {
+    return 0;
+  }
+  if (str[1] != 'm') {
+    return 0;
+  }
+  if (str[2] != 'o') {
+    return 0;
+  }
+  if (str[3] != ':') {
+    return 0;
+  }
+  if (str[4] == '1' || str[4] == '2' || str[4] == '3') {
+    return str[4] - '0';
+  }
+  return 0;
+}
+
+static int create_message_box(lv_obj_t **text_obj,
+                              const struct radio_prot_msg *prot_msg, int height)
+{
+  if (*text_obj == NULL) {
+    int is_emo = is_emo_prefix(prot_msg->msg);
+
+    int msg_len = strlen(prot_msg->msg);
+    int lines = msg_len == 0 ? 1 : ((msg_len + 15) / 16);
+    *text_obj = lv_label_create(ui_ChatsPanel);
+    lv_obj_set_width(*text_obj, 100);
+    lv_obj_set_height(*text_obj, lines * 26);
+    lv_obj_set_align(*text_obj, LV_ALIGN_TOP_MID);
+    lv_obj_set_y(*text_obj, height);
+    if (is_emo == 0) {
+      lv_label_set_text_fmt(*text_obj, "%s: %s", get_user_name(prot_msg->id),
+                            prot_msg->msg);
+    } else {
+      lv_label_set_text_fmt(*text_obj, "%s: ", get_user_name(prot_msg->id));
+    }
+    lv_obj_set_style_text_font(*text_obj, &lv_font_montserrat_10,
+                               LV_PART_MAIN | LV_STATE_DEFAULT);
+    if (is_emo) {
+      create_emoji(*text_obj, 0, 5,
+                   is_emo == 1   ? &emoji_grin
+                   : is_emo == 2 ? &emoji_rage
+                                 : &emoji_roll);
+      lv_obj_set_height(*text_obj, 25);
+    }
+  }
+
+  lv_obj_clear_flag(*text_obj, LV_OBJ_FLAG_HIDDEN);
+  return lv_obj_get_height(*text_obj);
+}
+
+void print_message(lv_obj_t *texts[], struct radio_prot_msg buffer[],
+                   int buffer_pointer)
+{
+  int height = 30;
+  for (int i = 0; i < buffer_pointer; i++) {
+    height += create_message_box(&texts[i], &buffer[i], height);
+  }
+}
+
+bool is_user_online(radio_uid_t uid) { return user_online[uid]; }
