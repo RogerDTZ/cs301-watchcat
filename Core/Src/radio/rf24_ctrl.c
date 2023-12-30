@@ -205,6 +205,9 @@ void radio_ptx_change_recv(radio_uid_t uid_to)
   NRF24L01_Write_Buf(NRF_WRITE_REG + RX_ADDR_P0, pipe_addr, RX_ADR_WIDTH);
 
   NRF24L01_CE = 1; // CE为高,进入接收模式
+
+  NRF24L01_Write_Reg(FLUSH_RX, 0xFF);
+  NRF24L01_Write_Reg(FLUSH_TX, 0xFF);
 }
 
 void radio_enable_rx_irq(bool enable)

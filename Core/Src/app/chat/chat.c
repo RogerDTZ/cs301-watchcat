@@ -134,9 +134,7 @@ void radio_event_handler_heartbeat(struct radio_prot_heartbeat *heartbeat)
   display_chat_bg();
 
   heartbeat_last_recv[sender] = get_50hz_tick();
-  if (!user_online[sender]) {
-    event_user_online(sender);
-  }
+  event_user_online(sender, !user_online[sender]);
   user_online[sender] = true;
 }
 

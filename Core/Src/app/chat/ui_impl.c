@@ -97,13 +97,15 @@ radio_uid_t get_single_chatter_uid(int ui_id)
   }
 }
 
-void event_user_online(radio_uid_t uid)
+void event_user_online(radio_uid_t uid, bool notify)
 {
   assert(uid != get_uid() && "Should not be called for local user");
 
   const char *user_name = get_user_name(uid);
   // Show the cross-app notification
-  lv_label_set_text_fmt(ui_Notification, "%s is online", user_name);
+  if (notify) {
+    lv_label_set_text_fmt(ui_Notification, "%s is online", user_name);
+  }
   // Toggle the online mark
   if (get_single_chatter_uid(1) == uid) {
     set_chatter_online_ui(1, true);

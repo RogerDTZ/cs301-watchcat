@@ -11,7 +11,7 @@
 
 #include "util/circular_queue.h"
 
-#define TX_RETRY_CNT (3)
+#define TX_RETRY_CNT (5)
 
 #define OUTBOUND_BUFFER_SIZE (64)
 #define CIRCULAR_BUFFER_SIZE (450)
@@ -70,7 +70,7 @@ static pkt_size_t radio_send_transmit(uint8_t out_buf[], pkt_size_t size)
       }
       // Switch back to PRX mode for a while
       radio_init_prx();
-      delay_ms(rand() % 21 + 10);
+      delay_ms(rand() % 100 + 1);
       radio_init_ptx(tx_uid_to);
     }
     if (!success) {

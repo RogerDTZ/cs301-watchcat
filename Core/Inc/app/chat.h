@@ -11,10 +11,10 @@
 #define SESSION_ID_0_1_2 (3)
 
 // Broadcast heartbeat every certain period (ms)
-#define HEARTBEAT_INTERVAL (500)
+#define HEARTBEAT_INTERVAL (1000)
 // If not received heartbeat for a certain period (ms), consider the remote
 // offline
-#define HEARTBEAT_OFFLINE_THRESHOLD (1500)
+#define HEARTBEAT_OFFLINE_THRESHOLD (2500)
 
 #define MAX_MESSAGE_BUFFER_LENGTH (20)
 
@@ -75,7 +75,7 @@ bool action_invite(radio_uid_t uid, radio_session_t session);
 /**
  * Called when a user turns online.
  */
-void event_user_online(radio_uid_t uid);
+void event_user_online(radio_uid_t uid, bool notify);
 
 /**
  * Called when a user turns offline.
