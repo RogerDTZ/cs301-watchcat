@@ -1,5 +1,4 @@
 /* USER CODE BEGIN Header */
-/* clang-format off */
 /**
   ******************************************************************************
   * @file           : main.c
@@ -19,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "fatfs.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -26,26 +26,15 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-/* clang-format on */
-
-#include <assert.h>
-
-#include "SYSTEM/delay/delay.h"
-
-#include "BSP/24C02/24cxx.h"
-#include "BSP/ATK_MD0280/atk_md0280_touch.h"
-#include "BSP/LED/led.h"
-#include "BSP/NRF24L01/24l01.h"
-#include "lvgl.h"
-#include "sl_ui/ui.h"
-
-#include "app/album.h"
-#include "app/calc.h"
-#include "app/chat.h"
-#include "port/input_dev.h"
-#include "port/lvgl_ctrl.h"
-
-/* clang-format off */
+#include "sys.h"
+#include "usart.h"
+#include "lcd.h"
+#include "malloc.h"
+#include "MMC_SD.h"
+#include "exfuns.h"
+#include "piclib.h"
+#include "remote.h"
+#include "fattester.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -66,18 +55,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
-// ms, updated every 500 ms
-static uint32_t tick_2hz;
-// ms, updated every 20 ms
-static uint32_t tick_50hz;
-
-static uint16_t probed_touch_point_x;
-static uint16_t probed_touch_point_y;
-static bool probed_touch_pressed;
-
-extern uint8_t rx_buffer[2];
-
+uint8_t pic[10][40];
+uint8_t pnum = 0;
+uint16_t index = 0;
+extern UART_HandleTypeDef huart1;
+extern uint8_t rxBuffer[20];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,38 +70,31 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-/* clang-format on */
-
-void update_2hz(uint32_t delta)
+u16 pic_get_tnum(u8 *path)
 {
-  assert(delta == 500);
-  tick_2hz += delta;
-
-  chat_update(delta);
+	u8 res;
+	u16 rval=0;
+ 	DIR tdir;
+	FILINFO *tfileinfo;
+	tfileinfo=(FILINFO*)mymalloc(sizeof(FILINFO));
+    res=f_opendir(&tdir,(const TCHAR*)path);
+	if(res==FR_OK&&tfileinfo)
+	{
+		while(1)
+		{
+	        res=f_readdir(&tdir,tfileinfo);
+	        if(res!=FR_OK||tfileinfo->fname[0]==0)break;
+			res=f_typetell((u8*)tfileinfo->fname);
+			if((res&0XF0)==0X50)
+			{
+				rval++;
+			}
+		}
+	}
+	myfree(tfileinfo);
+	return rval;
 }
 
-void update_50hz(uint32_t delta)
-{
-  assert(delta == 20);
-  tick_50hz += delta;
-
-  lv_tick_inc(delta);
-}
-
-uint32_t get_2hz_tick() { return tick_2hz; }
-
-uint32_t get_50hz_tick() { return tick_50hz; }
-
-void touch_indev_read_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
-{
-  data->point.x = (lv_coord_t)probed_touch_point_x;
-  data->point.y = (lv_coord_t)probed_touch_point_y;
-  data->state = probed_touch_pressed ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
-}
-
-static void custom_ui_init() {}
-
-/* clang-format off */
 /* USER CODE END 0 */
 
 /**
@@ -145,74 +120,152 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  /* clang-format on */
 
-  // Initialize the delay scale in the SYSTEM library
-  const uint32_t pclk2_freq = HAL_RCC_GetPCLK2Freq();
-  assert(pclk2_freq % 1000000 == 0);
-  delay_init(pclk2_freq / 1000000);
-
-  /* clang-format off */
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_TIM2_Init();
   MX_SPI1_Init();
-  MX_TIM3_Init();
   MX_USART1_UART_Init();
+  MX_FATFS_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
-  /* clang-format on */
+  HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
+  LCD_Init();
+  mem_init();
+  exfuns_init();
+  Remote_Init();
 
-  // Initialize LEDs
-  led_init();
-  LED0(1);
-  LED1(1);
+  uint8_t res;
+  DIR picdir;
+  uint16_t totpicnum;
+  FILINFO *picfileinfo;
+  uint8_t *pname;
+  uint32_t *picoffsettbl;
+  uint16_t curindex;
+  uint16_t temp;
+  uint8_t key;
 
-  // Initialize EEPROM
-  AT24CXX_Init();
-  while (AT24CXX_Check()) {
-    // Indicate a failure upon checking the EEPROM
-    LED0_TOGGLE();
-    HAL_Delay(300);
-    LED0_TOGGLE();
-    HAL_Delay(300);
+  FRESULT fr = f_mount(fs[0], "0:", 1);
+  if(fr == FR_OK){
+      LCD_ShowString(30,170,240,16,16,"mount ok");
+  }else if(fr == FR_NOT_READY) {
+  	  LCD_ShowString(30,170,240,16,16,"not ready error");
+  }
+  while(f_opendir(&picdir, "0:/PICTURE")){
+  		LCD_ShowString(30,40,240,16,16,"directory wrong!");
+  		HAL_Delay(200);
+  		LCD_Fill(30,40,240,56, WHITE);
+  		HAL_Delay(200);
+  }
+  LCD_ShowString(30,40,240,16,16,"directory ok");
+  totpicnum = pic_get_tnum("0:/PICTURE");
+  while(totpicnum == NULL){
+  		LCD_ShowString(30,60,240,16,16,"no picture!");
+  		HAL_Delay(200);
+  		LCD_Fill(30,60,240,76,WHITE);
+  		HAL_Delay(200);
+  }
+  LCD_ShowString(30,60,240,16,16,"picture ok");
+
+  picfileinfo = (FILINFO*)mymalloc(sizeof(FILINFO));
+  pname = mymalloc(_MAX_LFN*2+1);
+  picoffsettbl = mymalloc(4*totpicnum);
+
+  while(!picfileinfo||!pname||!picoffsettbl){
+  	  LCD_ShowString(30,80,240,16,16,"malloc fail!");
+  	  HAL_Delay(200);
+      LCD_Fill(30,80,240,96,WHITE);
+  	  HAL_Delay(200);;
+  }
+  LCD_ShowString(30,80,240,16,16,"malloc ok");
+
+  res = f_opendir(&picdir, "0:/PICTURE");
+  if(res==FR_OK){
+      curindex = 0;
+  	  while(1){
+  		  //temp = picdir.dptr;
+  		  temp = picdir.index;
+  	      res = f_readdir(&picdir, picfileinfo);
+  	      if(res != FR_OK || picfileinfo->fname[0] == 0) break;
+  		  res = f_typetell((u8*)picfileinfo->fname);
+  		  if((res&0XF0)==0X50){
+  		      picoffsettbl[curindex] = temp;
+  			  curindex++;
+  		  }
+  	  }
+  }
+  piclib_init();
+  curindex = 0;
+  res = f_opendir(&picdir,(const TCHAR*)"0:/PICTURE");
+
+  mf_scan_files((const TCHAR*)"0:/PICTURE");
+  /*LCD_Clear(WHITE);
+  LCD_ShowString(10,100,260,16,16,pic[0]);
+  LCD_ShowString(10,120,260,16,16,pic[1]);
+  LCD_ShowString(10,140,260,16,16,pic[2]);*/
+
+  /*while(1){
+	  LCD_Clear(BLACK);
+	  ai_load_picfile(p[curindex], 0, 0, lcddev.width, lcddev.height, 1);
+	  LCD_ShowString(2,2,lcddev.width,16,16,p[curindex]);
+	  curindex = (curindex + 1) %3;
+	  HAL_Delay(1000);
+  }*/
+
+  LCD_Clear(WHITE);
+  LCD_ShowString(2,2,lcddev.width,16,16,pic[curindex]);
+  char pn[20];
+  switch(pnum){
+  case 0: strcpy(pn, "number: 0"); break;
+  case 1: strcpy(pn, "number: 1"); break;
+  case 2: strcpy(pn, "number: 2"); break;
+  case 3: strcpy(pn, "number: 3"); break;
+  case 4: strcpy(pn, "number: 4"); break;
+  case 5: strcpy(pn, "number: 5"); break;
+  case 6: strcpy(pn, "number: 6"); break;
+  case 7: strcpy(pn, "number: 7"); break;
+  case 8: strcpy(pn, "number: 8"); break;
+  case 9: strcpy(pn, "number: 9"); break;
+  }
+  LCD_ShowString(2,300,lcddev.width,16,16,pn);
+  ai_load_picfile(pic[curindex], 0, 0, lcddev.width, lcddev.height, 1);
+  //LCD_ShowString(30,130,200,16,16,"KEYVAL:");
+  //LCD_ShowString(30,150,200,16,16,"KEYCNT:");
+  while(1){
+	  key=Remote_Scan();
+	  HAL_Delay(1000);
+	  //LCD_ShowNum(86,130,key,3,16);
+	  //LCD_ShowNum(86,150,RmtCnt,3,16);
+	  if(key == 194){
+		  curindex = (curindex + 1) % pnum;
+		  index = (index + 1) % pnum;
+		  LCD_Clear(WHITE);
+		  LCD_ShowString(2,300,lcddev.width,16,16,pn);
+		  //LCD_ShowString(2,2,lcddev.width,16,16,pic[curindex]);
+		  LCD_ShowString(2,2,lcddev.width,16,16,pic[index]);
+		  //ai_load_picfile(pic[curindex], 0, 0, lcddev.width, lcddev.height, 1);
+		  ai_load_picfile(pic[index], 0, 0, lcddev.width, lcddev.height, 1);
+	  }
+	  if(key == 34){
+		  curindex = (curindex + pnum - 1) % pnum;
+		  index = (index + pnum - 1) % pnum;
+		  LCD_Clear(WHITE);
+		  LCD_ShowString(2,300,lcddev.width,16,16,pn);
+		  //LCD_ShowString(2,2,lcddev.width,16,16,pic[curindex]);
+		  LCD_ShowString(2,2,lcddev.width,16,16,pic[index]);
+		  //ai_load_picfile(pic[curindex], 0, 0, lcddev.width, lcddev.height, 1);
+		  ai_load_picfile(pic[index], 0, 0, lcddev.width, lcddev.height, 1);
+	  }
+	  /*LCD_Clear(WHITE);
+	  LCD_ShowString(2,300,lcddev.width,16,16,pn);
+	  LCD_ShowString(2,2,lcddev.width,16,16,pic[curindex]);
+	  ai_load_picfile(pic[curindex], 0, 0, lcddev.width, lcddev.height, 1);*/
   }
 
-  // Initialize NRF24L01 2.4 Ghz
-  NRF24L01_Init();
-  while (NRF24L01_Check()) {
-    // Indicate a failure upon checking the NRF24L01
-    LED1_TOGGLE();
-    HAL_Delay(300);
-    LED1_TOGGLE();
-    HAL_Delay(300);
-  }
 
-  // Initialize lvgl library
-  lv_init();
-  // Initialize LCD & connect lvgl to LCD
-  lv_port_disp_init();
-  // Initialize all input devices
-  init_lvgl_input_devices();
-  // Init SquareLine ui
-  ui_init();
-  custom_ui_init();
 
-  // Enable TIM2: 50 Hz
-  HAL_TIM_Base_Start_IT(&htim2);
 
-  // Enable TIM3: 2 Hz
-  HAL_TIM_Base_Start_IT(&htim3);
-
-  // Initialize HAL Transmit
-  HAL_UART_Receive_IT(&huart1, (uint8_t *)rx_buffer, 1);
-
-  // open_app_calc();
-  // open_app_chat();
-  // open_app_album();
-
-  /* clang-format off */
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -222,18 +275,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    /* clang-format on */
-
-    // Probe input devices
-    probed_touch_pressed =
-        atk_md0280_touch_scan(&probed_touch_point_x, &probed_touch_point_y) ==
-        ATK_MD0280_TOUCH_EOK;
-
-    // Call lvgl's update handler
-    // Then, delay for the required period
-    HAL_Delay(lv_timer_handler());
   }
-  /* clang-format off */
   /* USER CODE END 3 */
 }
 

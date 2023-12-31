@@ -1,5 +1,4 @@
 /* USER CODE BEGIN Header */
-/* clang-format off */
 /**
   ******************************************************************************
   * @file    stm32f1xx_it.c
@@ -23,9 +22,7 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lvgl.h"
-#include "radio/radio.h"
-#include "app/chat.h"
+#include "lcd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,9 +42,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
-uint8_t rx_buffer[2];
-
+uint8_t rxBuffer[20];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -61,13 +56,13 @@ uint8_t rx_buffer[2];
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern TIM_HandleTypeDef htim2;
-extern TIM_HandleTypeDef htim3;
+extern SPI_HandleTypeDef hspi1;
+extern TIM_HandleTypeDef htim5;
 extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
-/* clang-format on */
-
-/* clang-format off */
+extern uint16_t index;
+extern uint8_t pic[10][40];
+extern uint8_t pnum;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -82,7 +77,7 @@ void NMI_Handler(void)
 
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
-  while (1)
+   while (1)
   {
   }
   /* USER CODE END NonMaskableInt_IRQn 1 */
@@ -209,64 +204,17 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles EXTI line1 interrupt.
+  * @brief This function handles SPI1 global interrupt.
   */
-void EXTI1_IRQHandler(void)
+void SPI1_IRQHandler(void)
 {
-  /* USER CODE BEGIN EXTI1_IRQn 0 */
+  /* USER CODE BEGIN SPI1_IRQn 0 */
 
-  /* USER CODE END EXTI1_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(RF24_IRQ_Pin);
-  /* USER CODE BEGIN EXTI1_IRQn 1 */
+  /* USER CODE END SPI1_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi1);
+  /* USER CODE BEGIN SPI1_IRQn 1 */
 
-  /* USER CODE END EXTI1_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line[9:5] interrupts.
-  */
-void EXTI9_5_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI9_5_IRQn 0 */
-
-  /* USER CODE END EXTI9_5_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(KEY0_Pin);
-  /* USER CODE BEGIN EXTI9_5_IRQn 1 */
-
-  /* USER CODE END EXTI9_5_IRQn 1 */
-}
-
-/**
-  * @brief This function handles TIM2 global interrupt.
-  */
-void TIM2_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM2_IRQn 0 */
-  /* USER CODE END TIM2_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim2);
-  /* USER CODE BEGIN TIM2_IRQn 1 */
-
-  uint32_t delta = (htim2.Instance->ARR + 1) / 10;
-  update_50hz(delta);
-
-  /* USER CODE END TIM2_IRQn 1 */
-}
-
-/**
-  * @brief This function handles TIM3 global interrupt.
-  */
-void TIM3_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM3_IRQn 0 */
-
-  /* USER CODE END TIM3_IRQn 0 */
-  HAL_TIM_IRQHandler(&htim3);
-  /* USER CODE BEGIN TIM3_IRQn 1 */
-
-  uint32_t delta = (htim3.Instance->ARR + 1) / 10;
-  update_2hz(delta);
-
-  /* USER CODE END TIM3_IRQn 1 */
+  /* USER CODE END SPI1_IRQn 1 */
 }
 
 /**
@@ -275,31 +223,55 @@ void TIM3_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
+
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */
-  HAL_UART_Receive_IT(&huart1, (uint8_t *)rx_buffer, 1);
+  HAL_UART_Receive_IT(&huart1, (uint8_t *)rxBuffer, 1);
   /* USER CODE END USART1_IRQn 1 */
 }
 
+/**
+  * @brief This function handles TIM5 global interrupt.
+  */
+void TIM5_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM5_IRQn 0 */
+
+  /* USER CODE END TIM5_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim5);
+  /* USER CODE BEGIN TIM5_IRQn 1 */
+
+  /* USER CODE END TIM5_IRQn 1 */
+}
+
 /* USER CODE BEGIN 1 */
-/* clang-format on */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  send_buffer[message_length++] = rx_buffer[0];
-  send_buffer[message_length] = '\0';
+	if(huart->Instance==USART1){
+		static unsigned char uRx_Data[1024] = {0};
+		static unsigned char uLength = 0;
+		if(rxBuffer[0] == '\n'){
+			HAL_UART_Transmit(&huart1, uRx_Data, uLength, 0xffff);
+			if(uLength < 5){
+				  index = (index + 1) % pnum;
+				  LCD_Clear(WHITE);
+				  //LCD_ShowString(2,300,lcddev.width,16,16,pn);
+				  LCD_ShowString(2,2,lcddev.width,16,16,pic[index]);
+				  ai_load_picfile(pic[index], 0, 0, lcddev.width, lcddev.height, 1);
+			}
+			if(uLength >= 5){
+				  index = (index + pnum - 1) % pnum;
+				  LCD_Clear(WHITE);
+				  //LCD_ShowString(2,300,lcddev.width,16,16,pn);
+				  LCD_ShowString(2,2,lcddev.width,16,16,pic[index]);
+				  ai_load_picfile(pic[index], 0, 0, lcddev.width, lcddev.height, 1);
+			}
+			uLength = 0;
+		}else{
+			uRx_Data[uLength] = rxBuffer[0];
+			uLength++;
+		}
+	}
 }
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-  switch (GPIO_Pin) {
-  case RF24_IRQ_Pin:
-    radio_irq_dispatcher();
-    break;
-  default:
-    break;
-  }
-}
-
-/* clang-format off */
 /* USER CODE END 1 */

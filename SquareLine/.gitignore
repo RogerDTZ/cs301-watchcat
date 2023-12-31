@@ -1,6 +1,0 @@
-*events.py
-export/*
-autosave/
-backup/
-
-!export/.gitkeep

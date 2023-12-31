@@ -1,0 +1,9 @@
+../Core/Src/album/malloc.c:19:6:mymemcpy	2
+../Core/Src/album/malloc.c:26:6:mymemset	2
+../Core/Src/album/malloc.c:32:6:mem_init	1
+../Core/Src/album/malloc.c:39:4:mem_perused	3
+../Core/Src/album/malloc.c:50:5:mem_malloc	8
+../Core/Src/album/malloc.c:76:4:mem_free	4
+../Core/Src/album/malloc.c:96:6:myfree	2
+../Core/Src/album/malloc.c:104:7:mymalloc	2
+../Core/Src/album/malloc.c:112:7:myrealloc	2

@@ -1,0 +1,8 @@
+../Core/Src/album/exfuns.c:33:4:exfuns_init	24	static
+../Core/Src/album/exfuns.c:49:4:char_upper	16	static
+../Core/Src/album/exfuns.c:59:4:f_typetell	40	static
+../Core/Src/album/exfuns.c:102:4:exf_getfree	48	static
+../Core/Src/album/exfuns.c:142:4:exf_copy	216	static
+../Core/Src/album/exfuns.c:203:5:exf_get_src_dname	24	static
+../Core/Src/album/exfuns.c:219:5:exf_fdsize	40	static
+../Core/Src/album/exfuns.c:288:4:exf_fdcopy	64	static

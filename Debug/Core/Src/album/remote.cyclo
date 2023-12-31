@@ -1,0 +1,4 @@
+../Core/Src/album/remote.c:5:6:Remote_Init	1
+../Core/Src/album/remote.c:44:6:HAL_TIM_PeriodElapsedCallback	5
+../Core/Src/album/remote.c:62:6:HAL_TIM_IC_CaptureCallback	13
+../Core/Src/album/remote.c:106:4:Remote_Scan	7

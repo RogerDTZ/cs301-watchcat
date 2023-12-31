@@ -1,0 +1,17 @@
+../Core/Src/album/mmc_sd.c:11:4:SD_SPI_ReadWriteByte	1
+../Core/Src/album/mmc_sd.c:16:6:SD_SPI_SpeedLow	1
+../Core/Src/album/mmc_sd.c:21:6:SD_SPI_SpeedHigh	1
+../Core/Src/album/mmc_sd.c:26:6:SD_SPI_Init	1
+../Core/Src/album/mmc_sd.c:51:6:SD_DisSelect	1
+../Core/Src/album/mmc_sd.c:58:4:SD_Select	2
+../Core/Src/album/mmc_sd.c:67:4:SD_WaitReady	3
+../Core/Src/album/mmc_sd.c:81:4:SD_GetResponse	4
+../Core/Src/album/mmc_sd.c:92:4:SD_RecvData	3
+../Core/Src/album/mmc_sd.c:109:4:SD_SendBlock	5
+../Core/Src/album/mmc_sd.c:130:4:SD_SendCmd	5
+../Core/Src/album/mmc_sd.c:157:4:SD_GetCID	3
+../Core/Src/album/mmc_sd.c:174:4:SD_GetCSD	3
+../Core/Src/album/mmc_sd.c:190:5:SD_GetSectorCount	3
+../Core/Src/album/mmc_sd.c:212:4:SD_Init	24
+../Core/Src/album/mmc_sd.c:284:4:SD_ReadDisk	6
+../Core/Src/album/mmc_sd.c:313:4:SD_WriteDisk	8

@@ -1,0 +1,9 @@
+../Core/Src/album/piclib.c:9:6:piclib_draw_hline	32	static
+../Core/Src/album/piclib.c:18:6:piclib_fill_color	32	static
+../Core/Src/album/piclib.c:25:6:piclib_init	4	static
+../Core/Src/album/piclib.c:51:5:piclib_alpha_blend	24	static
+../Core/Src/album/piclib.c:67:6:ai_draw_init	24	static
+../Core/Src/album/piclib.c:86:4:is_element_ok	16	static
+../Core/Src/album/piclib.c:103:4:ai_load_picfile	32	static
+../Core/Src/album/piclib.c:142:7:pic_memalloc	16	static
+../Core/Src/album/piclib.c:147:6:pic_memfree	16	static

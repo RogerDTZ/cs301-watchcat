@@ -1,5 +1,4 @@
 /* USER CODE BEGIN Header */
-/* clang-format off */
 /**
   ******************************************************************************
   * @file           : main.h
@@ -55,29 +54,9 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
-uint32_t get_2hz_tick();
-uint32_t get_50hz_tick();
-
-void update_2hz(uint32_t delta);
-void update_50hz(uint32_t delta);
-
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define RF24_IRQ_Pin GPIO_PIN_1
-#define RF24_IRQ_GPIO_Port GPIOA
-#define RF24_IRQ_EXTI_IRQn EXTI1_IRQn
-#define RF24_CE_Pin GPIO_PIN_4
-#define RF24_CE_GPIO_Port GPIOA
-#define RF24_CSN_Pin GPIO_PIN_4
-#define RF24_CSN_GPIO_Port GPIOC
-#define KEY0_Pin GPIO_PIN_5
-#define KEY0_GPIO_Port GPIOC
-#define KEY0_EXTI_IRQn EXTI9_5_IRQn
-#define IIC_SDA_Pin GPIO_PIN_11
-#define IIC_SDA_GPIO_Port GPIOC
-#define IIC_SCL_Pin GPIO_PIN_12
-#define IIC_SCL_GPIO_Port GPIOC
 
 /* USER CODE BEGIN Private defines */
 

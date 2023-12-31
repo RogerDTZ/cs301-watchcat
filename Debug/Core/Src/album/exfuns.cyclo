@@ -1,0 +1,8 @@
+../Core/Src/album/exfuns.c:33:4:exfuns_init	7
+../Core/Src/album/exfuns.c:49:4:char_upper	3
+../Core/Src/album/exfuns.c:59:4:f_typetell	11
+../Core/Src/album/exfuns.c:102:4:exf_getfree	2
+../Core/Src/album/exfuns.c:142:4:exf_copy	15
+../Core/Src/album/exfuns.c:203:5:exf_get_src_dname	5
+../Core/Src/album/exfuns.c:219:5:exf_fdsize	13
+../Core/Src/album/exfuns.c:288:4:exf_fdcopy	16
