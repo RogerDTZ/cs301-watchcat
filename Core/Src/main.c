@@ -39,7 +39,7 @@
 #include "lvgl.h"
 #include "sl_ui/ui.h"
 
-#include "app/album.h"
+#include "app/game.h"
 #include "app/calc.h"
 #include "app/chat.h"
 #include "port/input_dev.h"
@@ -181,13 +181,13 @@ int main(void)
 
   // Initialize NRF24L01 2.4 Ghz
   NRF24L01_Init();
-  while (NRF24L01_Check()) {
-    // Indicate a failure upon checking the NRF24L01
-    LED1_TOGGLE();
-    HAL_Delay(300);
-    LED1_TOGGLE();
-    HAL_Delay(300);
-  }
+//  while (NRF24L01_Check()) {
+//    // Indicate a failure upon checking the NRF24L01
+//    LED1_TOGGLE();
+//    HAL_Delay(300);
+//    LED1_TOGGLE();
+//    HAL_Delay(300);
+//  }
 
   // Initialize lvgl library
   lv_init();
@@ -208,9 +208,9 @@ int main(void)
   // Initialize HAL Transmit
   HAL_UART_Receive_IT(&huart1, (uint8_t *)rx_buffer, 1);
 
-  // open_app_calc();
+//   open_app_calc();
   // open_app_chat();
-  // open_app_album();
+  // open_app_game();
 
   /* clang-format off */
   /* USER CODE END 2 */

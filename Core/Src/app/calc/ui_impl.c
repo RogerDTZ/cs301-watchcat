@@ -93,8 +93,8 @@ void CalcModeChanged(lv_event_t *e)
     lv_obj_add_flag(ui_CalcCommonButton8, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_CalcCommonButton9, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_CalcCommonButtonDiv, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(ui_CalcCommonButtonBs, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(ui_CalcCommonButtonClear, LV_OBJ_FLAG_HIDDEN);
+//    lv_obj_add_flag(ui_CalcCommonButtonBs, LV_OBJ_FLAG_HIDDEN);
+//    lv_obj_add_flag(ui_CalcCommonButtonClear, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_CalcCommonButtonPow, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(ui_CalcCommonButtonLB, LV_OBJ_FLAG_HIDDEN);
   }
@@ -109,13 +109,16 @@ void CalcModeChanged(lv_event_t *e)
 
 void CalcCommClicked0(lv_event_t *e)
 {
-  content[ptr++] = '0';
-  calc_set_fml(content);
+
+		content[ptr++] = '0';
+		calc_set_fml(content);
+
 }
 void CalcCommClicked1(lv_event_t *e)
 {
-  content[ptr++] = '1';
-  calc_set_fml(content);
+
+		content[ptr++] = '1';
+		calc_set_fml(content);
 }
 void CalcCommClicked2(lv_event_t *e)
 {
@@ -124,8 +127,10 @@ void CalcCommClicked2(lv_event_t *e)
 }
 void CalcCommClicked3(lv_event_t *e)
 {
-  content[ptr++] = '3';
-  calc_set_fml(content);
+	if(content[ptr-1]>=0 && content[ptr-1]<=9){
+		content[ptr++] = '3';
+		calc_set_fml(content);
+	}
 }
 void CalcCommClicked4(lv_event_t *e)
 {
@@ -159,23 +164,43 @@ void CalcCommClicked9(lv_event_t *e)
 }
 void CalcCommClickedAdd(lv_event_t *e)
 {
-  content[ptr++] = '+';
-  calc_set_fml(content);
+	if (mode == 0){
+		if (content[ptr-1]<'0' || content[ptr-1]>'9'){
+			return;
+		}
+	}
+	content[ptr++] = '+';
+	calc_set_fml(content);
 }
 void CalcCommClickedSub(lv_event_t *e)
 {
-  content[ptr++] = '-';
-  calc_set_fml(content);
+	if (mode == 0){
+		if (content[ptr-1]<'0' || content[ptr-1]>'9'){
+			return;
+		}
+	}
+	content[ptr++] = '-';
+	calc_set_fml(content);
 }
 void CalcCommClickedMul(lv_event_t *e)
 {
-  content[ptr++] = '*';
-  calc_set_fml(content);
+	if (mode == 0){
+		if (content[ptr-1]<'0' || content[ptr-1]>'9'){
+			return;
+		}
+	}
+	content[ptr++] = '*';
+	calc_set_fml(content);
 }
 void CalcCommClickedDiv(lv_event_t *e)
 {
-  content[ptr++] = '/';
-  calc_set_fml(content);
+	if (mode == 0){
+		if (content[ptr-1]<'0' || content[ptr-1]>'9'){
+			return;
+		}
+	}
+	content[ptr++] = '/';
+	calc_set_fml(content);
 }
 // 定义运算符的优先级
 int getPriority(char op)
@@ -246,6 +271,11 @@ double customAtob(const char *str)
 double calculateExpression(const char *expression, int bin)
 {
   int len = strlen(expression);
+
+  // 以操作符结尾
+  if (expression[len-1]>'9' || expression[len-1]<'0'){
+  return NAN;
+  }
 
   // 操作数栈
   double operandStack[len];
@@ -327,14 +357,30 @@ void CalcCommClickedEqual(lv_event_t *e)
   } else if (mode == 2) {
     BinaryEqual(e);
   } else {
-    double result = calculateExpression(content, 0);
-    while (ptr != 0) {
-      ptr--;
-      content[ptr] = 0;
-    }
-    char result_show[50]; // Adjust the size based on your needs
-    sprintf(result_show, "%g", result);
-    calc_set_fml(result_show);
+	  double result = calculateExpression(content, 0);
+	  while (ptr != 0) {
+	      ptr--;
+	      content[ptr] = 0;
+	  }
+
+	  char result_show[50]; // Adjust the size based on your needs
+	  if (isnan(result) || isinf(result)) {
+	      strcpy(result_show, "Error");
+	      calc_set_fml(result_show);
+	      return;
+	  }
+
+	  sprintf(result_show, "%g", result);
+	  // 使用strlen获取实际字符串长度
+	  int n = strlen(result_show);
+
+	  // 使用strcpy进行复制
+	  strcpy(content, result_show);
+
+	  // 更新ptr
+	  ptr = n;
+
+	  calc_set_fml(result_show);
   }
 }
 

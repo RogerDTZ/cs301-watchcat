@@ -1,10 +1,11 @@
 #include "lvgl.h"
 #include "sl_ui/ui.h"
 
-#include "app/album.h"
+
 #include "app/calc.h"
 #include "app/chat.h"
 #include "app/home.h"
+#include "app/game.h"
 
 extern enum open_state curr_open;
 
@@ -22,12 +23,12 @@ void HomeButonCalcClicked(lv_event_t *e)
   exit_home();
   open_app_calc();
 }
-void HomeButonAlbumClicked(lv_event_t *e)
+void HomeButonGameClicked(lv_event_t *e)
 {
   assert(curr_open == OPEN_STATE_HOME);
-  curr_open = OPEN_STATE_ALBUM;
+  curr_open = OPEN_STATE_GAME;
   exit_home();
-  open_app_album();
+  open_app_game();
 }
 
 void HomeButtonClicked(lv_event_t *e)
@@ -43,8 +44,8 @@ void HomeButtonClicked(lv_event_t *e)
     close_app_calc();
     enter_home();
     break;
-  case OPEN_STATE_ALBUM:
-    close_app_album();
+  case OPEN_STATE_GAME:
+    close_app_game();
     enter_home();
     break;
   default:

@@ -5,7 +5,7 @@ enum open_state {
   OPEN_STATE_HOME,
   OPEN_STATE_CHAT,
   OPEN_STATE_CALC,
-  OPEN_STATE_Game,
+  OPEN_STATE_GAME,
 };
 
 void enter_home();
