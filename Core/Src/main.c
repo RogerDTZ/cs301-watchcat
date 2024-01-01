@@ -40,8 +40,7 @@
 #include "sl_ui/ui.h"
 
 #include "app/game.h"
-#include "app/calc.h"
-#include "app/chat.h"
+
 #include "port/input_dev.h"
 #include "port/lvgl_ctrl.h"
 
@@ -95,7 +94,7 @@ void update_2hz(uint32_t delta)
   assert(delta == 500);
   tick_2hz += delta;
 
-  chat_update(delta);
+//  chat_update(delta);
 }
 
 void update_50hz(uint32_t delta)

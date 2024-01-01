@@ -25,7 +25,7 @@
 /* USER CODE BEGIN Includes */
 #include "lvgl.h"
 #include "radio/radio.h"
-#include "app/chat.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -286,8 +286,8 @@ void USART1_IRQHandler(void)
 /* clang-format on */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  send_buffer[message_length++] = rx_buffer[0];
-  send_buffer[message_length] = '\0';
+//  send_buffer[message_length++] = rx_buffer[0];
+//  send_buffer[message_length] = '\0';
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)

@@ -2,8 +2,7 @@
 #include "sl_ui/ui.h"
 
 
-#include "app/calc.h"
-#include "app/chat.h"
+
 #include "app/home.h"
 #include "app/game.h"
 
@@ -14,7 +13,7 @@ void HomeButonChatClicked(lv_event_t *e)
   assert(curr_open == OPEN_STATE_HOME);
   curr_open = OPEN_STATE_CHAT;
   exit_home();
-  open_app_chat();
+//  open_app_chat();
 }
 void HomeButonCalcClicked(lv_event_t *e)
 {
@@ -37,7 +36,7 @@ void HomeButtonClicked(lv_event_t *e)
   case OPEN_STATE_HOME:
     break;
   case OPEN_STATE_CHAT:
-    close_app_chat();
+//    close_app_chat();
     enter_home();
     break;
   case OPEN_STATE_CALC:
