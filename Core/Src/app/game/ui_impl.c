@@ -286,6 +286,11 @@ void ButtonLevelClicked(lv_event_t * e){
 	new_img_index = 7 - level;
 }
 void Game_Restart(lv_event_t * e){
+	score = 0;
+	char scoreStr[10]; // Assuming a reasonable size for the string
+    sprintf(scoreStr, "Score: %d ", score);
+    lv_label_set_text(ui_LabelScore, scoreStr);
+
 	lv_obj_add_flag(ui_CongratulationPanel, LV_OBJ_FLAG_HIDDEN);
 	lv_obj_add_flag(ui_IntroductionPanel, LV_OBJ_FLAG_HIDDEN);
 	lv_label_set_text(ui_LabelRestart, "Restart");
