@@ -7,9 +7,10 @@
 
 #ifndef INC_APP_GAME_H_
 #define INC_APP_GAME_H_
+#include <stdio.h>
 
-
-
+void open_app_game();
+void close_app_game();
 
 
 #endif /* INC_APP_GAME_H_ */
