@@ -14,4 +14,9 @@ void open_app_game() { lv_obj_clear_flag(ui_GameApp, LV_OBJ_FLAG_HIDDEN);}
 
 void close_app_game() { lv_obj_add_flag(ui_GameApp, LV_OBJ_FLAG_HIDDEN); }
 
+#include <stdbool.h>
+
+
+
+
 

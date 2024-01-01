@@ -21,7 +21,7 @@ void HomeButonCalcClicked(lv_event_t *e)
   assert(curr_open == OPEN_STATE_HOME);
   curr_open = OPEN_STATE_CALC;
   exit_home();
-  open_app_calc();
+//  open_app_calc();
 }
 void HomeButonGameClicked(lv_event_t *e)
 {
@@ -41,7 +41,7 @@ void HomeButtonClicked(lv_event_t *e)
     enter_home();
     break;
   case OPEN_STATE_CALC:
-    close_app_calc();
+//    close_app_calc();
     enter_home();
     break;
   case OPEN_STATE_GAME:
