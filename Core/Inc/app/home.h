@@ -12,4 +12,6 @@ void enter_home();
 
 void exit_home();
 
+void update_time();
+
 #endif /* __HOME_H__ */

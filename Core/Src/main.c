@@ -42,6 +42,7 @@
 #include "app/album.h"
 #include "app/calc.h"
 #include "app/chat.h"
+#include "app/home.h"
 #include "port/input_dev.h"
 #include "port/lvgl_ctrl.h"
 
@@ -96,6 +97,7 @@ void update_2hz(uint32_t delta)
   tick_2hz += delta;
 
   chat_update(delta);
+  update_time();
 }
 
 void update_50hz(uint32_t delta)

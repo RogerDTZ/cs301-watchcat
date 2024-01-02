@@ -8,6 +8,8 @@
 
 extern enum open_state curr_open;
 
+int time;
+
 void HomeButonChatClicked(lv_event_t *e)
 {
   assert(curr_open == OPEN_STATE_HOME);
@@ -51,4 +53,11 @@ void HomeButtonClicked(lv_event_t *e)
     assert(0 && "Invalid state");
   }
   curr_open = OPEN_STATE_HOME;
+}
+
+void update_time(){
+  time++;
+  if(time % 2 == 0){
+    lv_label_set_text_fmt(ui_HomeTime, "Time since start: %d s", time / 2);
+  }
 }
