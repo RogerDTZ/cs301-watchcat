@@ -30,6 +30,7 @@
 
 #include <assert.h>
 
+
 #include "SYSTEM/delay/delay.h"
 
 #include "BSP/24C02/24cxx.h"
@@ -88,12 +89,15 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 /* clang-format on */
-
+int hour = 16;
+int min = 20;
+int sec = 0;
+int counter = 0;
 void update_2hz(uint32_t delta)
 {
   assert(delta == 500);
   tick_2hz += delta;
-
+  counter = (counter + 1) % 3;
 //  chat_update(delta);
 }
 
@@ -210,6 +214,9 @@ int main(void)
 //   open_app_calc();
   // open_app_chat();
   // open_app_game();
+  int hour = 16;
+  int min = 20;
+  int sec = 00;
 
   /* clang-format off */
   /* USER CODE END 2 */
@@ -222,7 +229,23 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
     /* clang-format on */
-
+	  if(counter == 2){
+		  sec++;
+		  if(sec == 60){
+			  min++;
+			  if(min == 60){
+				  hour++;
+				  min = 0;
+			  }
+			  sec = 0;
+		  }
+		  counter = 0;
+	  }
+	  char timeStr[9];  // 8个字符 + 1个用于字符串终止符'\0'
+	  // 使用 sprintf 格式化时间字符串
+	  sprintf(timeStr, "%02d:%02d:%02d", hour, min, sec);
+	  printf("%s\n", timeStr);
+	  lv_label_set_text(ui_LabelTime, timeStr);
     // Probe input devices
     probed_touch_pressed =
         atk_md0280_touch_scan(&probed_touch_point_x, &probed_touch_point_y) ==
