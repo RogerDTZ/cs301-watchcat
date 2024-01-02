@@ -55,9 +55,14 @@ void HomeButtonClicked(lv_event_t *e)
   curr_open = OPEN_STATE_HOME;
 }
 
-void update_time(){
+void update_time()
+{
   time++;
-  if(time % 2 == 0){
-    lv_label_set_text_fmt(ui_HomeTime, "Time since start: %d s", time / 2);
+  if (time % 2 == 0) {
+    int second = time >> 1;
+    int minute = second / 60;
+    second %= 60;
+    lv_label_set_text_fmt(ui_HomeTime, "%02d:%02d", minute, second);
+    // lv_label_set_text_fmt(ui_HomeTime, "Time since start: %d s", time / 2);
   }
 }
